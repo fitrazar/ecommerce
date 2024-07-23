@@ -8,22 +8,21 @@
 
     <meta name="title" content="{{ $__env->yieldContent('title') }}" />
     <meta name="description"
-        content="{{ !empty(trim($__env->yieldContent('description'))) ? $__env->yieldContent('description') : $appSetting->description }}" />
+        content="{{ !empty(trim($__env->yieldContent('description'))) ? $__env->yieldContent('description') : '-' }}" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://domain.com/" />
     <meta property="og:title" content="{{ $__env->yieldContent('title') }}" />
     <meta property="og:description"
-        content="{{ !empty(trim($__env->yieldContent('description'))) ? $__env->yieldContent('description') : $appSetting->description }}" />
+        content="{{ !empty(trim($__env->yieldContent('description'))) ? $__env->yieldContent('description') : '-' }}" />
     <meta property="og:image"
         content="{{ !empty(trim($__env->yieldContent('image'))) ? $__env->yieldContent('image') : asset('assets/images/logo.png') }}" />
-
 
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://domain.com/" />
     <meta property="twitter:title" content="{{ $__env->yieldContent('title') }}" />
     <meta property="twitter:description"
-        content="{{ !empty(trim($__env->yieldContent('description'))) ? $__env->yieldContent('description') : $appSetting->description }}" />
+        content="{{ !empty(trim($__env->yieldContent('description'))) ? $__env->yieldContent('description') : '-' }}" />
     <meta property="twitter:image"
         content="{{ !empty(trim($__env->yieldContent('image'))) ? $__env->yieldContent('image') : asset('assets/images/logo.png') }}" />
 

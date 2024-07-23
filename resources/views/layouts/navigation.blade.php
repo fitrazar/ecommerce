@@ -52,11 +52,6 @@
                             {{ __('Login') }}
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('register') }}">
-                            {{ __('Register') }}
-                        </a>
-                    </li>
                 </ul>
             @endauth
         </div>
