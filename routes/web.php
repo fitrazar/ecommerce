@@ -11,7 +11,7 @@ use App\Http\Controllers\Admin\DashboardController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::prefix('/dashboard')->middleware(['auth'])->group(function () {
+Route::prefix('/admin')->middleware(['auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('/brand', BrandController::class)->except('show');
     Route::resource('/category', CategoryController::class)->except('show');

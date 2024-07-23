@@ -5,7 +5,21 @@
     </div>
     <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
-            <li><a href="{{ route('dashboard') }}">Beranda</a></li>
+            @auth
+                <li><a href="{{ route('dashboard') }}">Beranda</a></li>
+                <li>
+                    <details>
+                        <summary>Data Master</summary>
+                        <ul class="p-2 z-10">
+                            <li><a href="{{ route('brand.index') }}">Data Brand</a></li>
+                            <li><a href="{{ route('category.index') }}">Data Kategori</a></li>
+                            <li><a href="{{ route('material.index') }}">Data Bahan</a></li>
+                            <li><a href="{{ route('unit.index') }}">Data Satuan</a></li>
+                        </ul>
+                    </details>
+                </li>
+            @else
+            @endauth
         </ul>
     </div>
     <div class="navbar-end mr-10">
