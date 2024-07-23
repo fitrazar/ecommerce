@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -17,6 +18,7 @@ Route::prefix('/admin')->middleware(['auth'])->group(function () {
     Route::resource('/category', CategoryController::class)->except('show');
     Route::resource('/material', MaterialController::class)->except('show');
     Route::resource('/unit', UnitController::class)->except('show');
+    Route::resource('/product', ProductController::class);
 });
 
 
