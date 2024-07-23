@@ -51,7 +51,7 @@ class CategoryController extends Controller
 
         Category::create($validatedData);
 
-        return redirect('/dashboard/category')->with('success', 'Kategori Berhasil Ditambahkan!');
+        return redirect('/admin/category')->with('success', 'Kategori Berhasil Ditambahkan!');
     }
 
 
