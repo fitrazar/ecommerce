@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Unit;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
@@ -38,9 +39,11 @@ class UnitController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string',
-            'acronym' => 'required|string|unique:units,slug',
+            'acronym' => 'required|string|unique:units,acronym',
         ]);
 
+        $validatedData['name'] = Str::title($validatedData['name']);
+        $validatedData['acronym'] = Str::lower($validatedData['acronym']);
         $validatedData['status'] = $request->status == true ? 0 : 1;
 
         Unit::create($validatedData);
@@ -63,10 +66,12 @@ class UnitController extends Controller
     {
         $rules = [
             'name' => 'required|string',
-            'acronym' => 'required|string|unique:units,slug,' . $unit->id,
+            'acronym' => 'required|string|unique:units,acronym,' . $unit->id,
         ];
 
         $validatedData = $request->validate($rules);
+        $validatedData['name'] = Str::title($validatedData['name']);
+        $validatedData['acronym'] = Str::lower($validatedData['acronym']);
         $validatedData['status'] = $request->status == true ? 0 : 1;
 
         Unit::findOrFail($unit->id)->update($validatedData);
