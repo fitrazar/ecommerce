@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Category;
+use App\Models\Color;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Exception;
@@ -10,7 +10,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
-class CategoryController extends Controller
+class ColorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,15 +18,16 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $categories = Category::all();
+            $colors = Color::all();
 
-            return DataTables::of($categories)
+            return DataTables::of($colors)
                 ->make();
         }
         $title = 'Hapus Data!';
         $text = "Apakah anda yakin untuk menghapus data ini?";
         confirmDelete($title, $text);
-        return view('admin.category.index');
+
+        return view('admin.color.index');
     }
 
     /**
@@ -34,7 +35,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.category.create');
+        return view('admin.color.manage');
     }
 
     /**
@@ -43,96 +44,90 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         try {
+
             $validatedData = $request->validate([
-                'image' => 'nullable|max:4096|mimes:png,jpg,svg',
                 'name' => 'required|string',
-                'slug' => 'required|string|unique:categories,slug',
+                'image' => 'nullable|max:4096|mimes:png,jpg,svg',
             ]);
 
             if ($request->hasFile('image')) {
                 $validatedData['image'] = time() . '.' . $request->file('image')->getClientOriginalExtension();
-                $request->file('image')->storeAs('category', $validatedData['image']);
+                $request->file('image')->storeAs('color', $validatedData['image']);
             }
-            $validatedData['status'] = $request->status == true ? 0 : 1;
+            Color::create($validatedData);
 
-            Category::create($validatedData);
-            toast('Berhasil Tambah Kategori!', 'success');
-            return redirect('/admin/category');
+            toast('Berhasil Menambah Warna', 'success');
+            return redirect('/admin/color');
         } catch (Exception $e) {
-            toast('Gagal Mengedit Kategori!', 'error');
-            return redirect('admin/category');
+            toast('Gagal Menambah Warna', 'error');
+            return redirect('admin/color');
         } catch (QueryException $qe) {
-            toast('Gagal Mengedit Kategori!', 'error');
-            return redirect('admin/category');
+            toast('Gagal Menambah Warna', 'error');
+            return redirect('admin/color');
         }
     }
-
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
+    public function edit(Color $color)
     {
-        return view('admin.category.edit', compact('category'));
+        return view('admin.color.manage', compact('color'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Color $color)
     {
         try {
 
             $rules = [
                 'image' => 'nullable|max:4096|mimes:png,jpg,svg',
                 'name' => 'required|string',
-                'slug' => 'required|string|unique:categories,slug,' . $category->id,
             ];
 
             $validatedData = $request->validate($rules);
-
             $validatedData['image'] = $request->oldImage;
             if ($request->file('image')) {
-                $path = 'category';
+                $path = 'color';
                 if ($request->oldImage) {
                     Storage::delete($path . '/' . $request->oldImage);
                 }
                 $validatedData['image'] = time() . '.' . $request->file('image')->getClientOriginalExtension();
                 $request->file('image')->storeAs($path, $validatedData['image']);
             }
-            $validatedData['status'] = $request->status == true ? 0 : 1;
+            Color::findOrFail($color->id)->update($validatedData);
 
-            Category::findOrFail($category->id)->update($validatedData);
-            toast('Berhasil Edit Kategori!', 'success');
-
-            return redirect('/admin/category');
+            toast('Berhasil Mengedit Warna', 'success');
+            return redirect('/admin/color');
         } catch (Exception $e) {
-            toast('Gagal Mengedit Kategori!', 'error');
-            return redirect('admin/category');
+            toast('Gagal Mengedit Warna', 'error');
+            return redirect('admin/color');
         } catch (QueryException $qe) {
-            toast('Gagal Mengedit Kategori!', 'error');
-            return redirect('admin/category');
+            toast('Gagal Mengedit Warna', 'error');
+            return redirect('admin/color');
         }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Color $color)
     {
         try {
-            if ($category->image) {
-                Storage::delete('category/' . $category->image);
+            if ($color->image) {
+                Storage::delete('color/' . $color->image);
             }
-            Category::destroy($category->id);
-            toast('Berhasil Hapus Kategori!', 'success');
-            return redirect('/admin/category');
+            Color::destroy($color->id);
+            toast('Berhasil Hapus Warna', 'success');
+            return redirect('/admin/color');
         } catch (Exception $e) {
-            toast('Gagal Mengedit Kategori!', 'error');
-            return redirect('admin/category');
+            toast('Gagal Menghapus Warna', 'error');
+            return redirect('admin/color');
         } catch (QueryException $qe) {
-            toast('Gagal Mengedit Kategori!', 'error');
-            return redirect('admin/category');
+            toast('Gagal Menghapus Warna', 'error');
+            return redirect('admin/color');
         }
     }
 }

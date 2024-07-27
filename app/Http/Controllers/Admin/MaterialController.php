@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Material;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Exception;
+use Illuminate\Database\QueryException;
 use Yajra\DataTables\Facades\DataTables;
 
 class MaterialController extends Controller
@@ -20,6 +22,9 @@ class MaterialController extends Controller
             return DataTables::of($materials)
                 ->make();
         }
+        $title = 'Hapus Data!';
+        $text = "Apakah anda yakin untuk menghapus data ini?";
+        confirmDelete($title, $text);
         return view('admin.material.index');
     }
 
@@ -36,16 +41,23 @@ class MaterialController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'slug' => 'required|string|unique:brands,slug',
-        ]);
 
-        $validatedData['status'] = $request->status == true ? 0 : 1;
-
-        Material::create($validatedData);
-
-        return redirect('/admin/material')->with('success', 'Bahan Berhasil Ditambahkan!');
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string',
+                'slug' => 'required|string|unique:brands,slug',
+            ]);
+            $validatedData['status'] = $request->status == true ? 0 : 1;
+            Material::create($validatedData);
+            toast('Berhasil Menambah Material!', 'success');
+            return redirect('/admin/material');
+        } catch (Exception $e) {
+            toast('Gagal Menambah Material!', 'error');
+            return redirect('admin/material');
+        } catch (QueryException $qe) {
+            toast('Gagal Menambah Material!', 'error');
+            return redirect('admin/material');
+        }
     }
 
 
@@ -62,17 +74,27 @@ class MaterialController extends Controller
      */
     public function update(Request $request, Material $material)
     {
-        $rules = [
-            'name' => 'required|string',
-            'slug' => 'required|string|unique:materials,slug,' . $material->id,
-        ];
 
-        $validatedData = $request->validate($rules);
-        $validatedData['status'] = $request->status == true ? 0 : 1;
+        try {
 
-        Material::findOrFail($material->id)->update($validatedData);
+            $rules = [
+                'name' => 'required|string',
+                'slug' => 'required|string|unique:materials,slug,' . $material->id,
+            ];
 
-        return redirect('/admin/material')->with('success', 'Bahan Berhasil Diupdate');
+            $validatedData = $request->validate($rules);
+            $validatedData['status'] = $request->status == true ? 0 : 1;
+
+            Material::findOrFail($material->id)->update($validatedData);
+            toast('Berhasil Mengedit Material!', 'success');
+            return redirect('/admin/material');
+        } catch (Exception $e) {
+            toast('Gagal Mengedit Material!', 'error');
+            return redirect('admin/material');
+        } catch (QueryException $qe) {
+            toast('Gagal Mengedit Material!', 'error');
+            return redirect('admin/material');
+        }
     }
 
     /**
@@ -80,7 +102,17 @@ class MaterialController extends Controller
      */
     public function destroy(Material $material)
     {
-        Material::destroy($material->id);
-        return redirect('/admin/material')->with('success', 'Bahan Berhasil Dihapus');
+        try {
+
+            Material::destroy($material->id);
+            toast('Berhasil Menghapus Material!', 'success');
+            return redirect('/admin/material');
+        } catch (Exception $e) {
+            toast('Gagal Menghapus Material!', 'error');
+            return redirect('admin/material');
+        } catch (QueryException $qe) {
+            toast('Gagal Menghapus Material!', 'error');
+            return redirect('admin/material');
+        }
     }
 }

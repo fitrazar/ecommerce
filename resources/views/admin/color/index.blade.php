@@ -1,4 +1,4 @@
-@section('title', 'Data Bahan')
+@section('title', 'Data Warna')
 
 <x-app-layout>
 
@@ -6,24 +6,24 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <x-card.card-default class="static">
 
-                <a href="{{ route('material.create') }}">
+                <a href="{{ route('color.create') }}">
                     <x-button.primary-button>
                         <i class="fa-solid fa-plus"></i>
                         Tambah Data
                     </x-button.primary-button>
                 </a>
                 <div class="relative overflow-x-auto mt-5">
-                    <table id="materials" class="table">
+                    <table id="colors" class="table">
                         <thead>
                             <tr>
                                 <th scope="col" class="px-6 py-3">
                                     No
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Nama Bahan
+                                    Nama Warna
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Status
+                                    Gambar
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Action
@@ -40,19 +40,15 @@
     <x-slot name="script">
         <script>
             $(document).ready(function() {
-
-                $('#materials').DataTable({
+                $('#colors').DataTable({
                     buttons: [
-                        // 'copy', 'excel', 'csv', 'pdf', 'print',
                         'colvis'
                     ],
                     processing: true,
-                    search: {
-                        return: true
-                    },
                     serverSide: true,
                     ajax: '{{ url()->current() }}',
-                    columns: [{
+                    columns: [
+                        {
                             data: null,
                             name: 'no',
                             orderable: false,
@@ -66,10 +62,10 @@
                             name: 'name'
                         },
                         {
-                            data: 'status',
-                            name: 'status',
-                            render: function(data, type, full, meta) {
-                                return data == 1 ? 'Aktif' : 'Tidak Aktif';
+                            data: 'image',
+                            name: 'image',
+                            render: function(data, type, row, meta) {
+                                return `<img src="{{ asset('storage/color') }}/${data}" class="h-[100px] w-[100px] object-cover" />`;
                             }
                         },
                         {
@@ -79,17 +75,17 @@
                             searchable: false,
                             render: function(data, type, full, meta) {
                                 return `
-                                <a href="{{ url('/admin/material/${full.slug}/edit') }}">
+                                <a href="{{ url('/admin/color/${full.id}/edit') }}">
                                     <x-button.info-button type="button" class="btn-sm text-white"><i class="fa-regular fa-pen-to-square"></i>Edit</x-button.info-button>
                                 </a>
-                                 <x-form action="{{ url('/admin/material/${full.id}') }}" style="display: inline;">
+                                <x-form action="{{ url('/admin/color/${full.id}') }}" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
                                     <x-button.danger-button type="submit" class="btn-sm text-white delete-button" data-confirm-delete="true"><i class="fa-regular fa-trash-can"></i>Hapus</x-button.danger-button>
                                 </x-form>
                             `;
                             }
-                        },
+                        }
                     ]
                 });
 
@@ -111,7 +107,6 @@
                         }
                     });
                 });
-
             });
         </script>
     </x-slot>

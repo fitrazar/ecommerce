@@ -18,13 +18,13 @@
                     <div class="mt-4">
                         <x-input.input-label for="name" :value="__('Nama Satuan')" />
                         <x-input.text-input id="name" class="mt-1 w-full" type="text" name="name"
-                            :value="old('name')" required autofocus autocomplete="name" />
+                            :value="old('name')" autofocus autocomplete="name" />
                         <x-input.input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
                     <div class="mt-4">
                         <x-input.input-label for="acronym" :value="__('Singkatan')" />
                         <x-input.text-input id="acronym" class="mt-1 w-full" type="text" name="acronym"
-                            :value="old('acronym')" required autofocus autocomplete="acronym" />
+                            :value="old('acronym')" autofocus autocomplete="acronym" />
                         <x-input.input-error :messages="$errors->get('acronym')" class="mt-2" />
                     </div>
 

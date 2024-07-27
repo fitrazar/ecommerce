@@ -11,7 +11,7 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
-    protected $with = ['category', 'brand', 'material', 'unit'];
+    protected $with = ['category', 'brand', 'material', 'unit', 'productColors'];
 
     public function unit()
     {
@@ -33,6 +33,11 @@ class Product extends Model
     public function productImages()
     {
         return $this->hasMany(ProductImage::class, 'product_id');
+    }
+
+    public function productColors()
+    {
+        return $this->belongsToMany(Color::class, 'product_colors');
     }
 
     public function getRouteKeyName()

@@ -6,6 +6,8 @@ use App\Models\Unit;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Exception;
+use Illuminate\Database\QueryException;
 use Yajra\DataTables\Facades\DataTables;
 
 class UnitController extends Controller
@@ -21,6 +23,9 @@ class UnitController extends Controller
             return DataTables::of($units)
                 ->make();
         }
+        $title = 'Hapus Data!';
+        $text = "Apakah anda yakin untuk menghapus data ini?";
+        confirmDelete($title, $text);
         return view('admin.unit.index');
     }
 
@@ -37,18 +42,26 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'acronym' => 'required|string|unique:units,acronym',
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string',
+                'acronym' => 'required|string|unique:units,acronym',
+            ]);
 
-        $validatedData['name'] = Str::title($validatedData['name']);
-        $validatedData['acronym'] = Str::lower($validatedData['acronym']);
-        $validatedData['status'] = $request->status == true ? 0 : 1;
+            $validatedData['name'] = Str::title($validatedData['name']);
+            $validatedData['acronym'] = Str::lower($validatedData['acronym']);
+            $validatedData['status'] = $request->status == true ? 0 : 1;
 
-        Unit::create($validatedData);
-
-        return redirect('/admin/unit')->with('success', 'Satuan Berhasil Ditambahkan!');
+            Unit::create($validatedData);
+            toast('Berhasil Menambah Satuan', 'success');
+            return redirect('/admin/unit');
+        } catch (Exception $e) {
+            toast('Gagal Menambah Satuan', 'error');
+            return redirect('admin/unit');
+        } catch (QueryException $qe) {
+            toast('Gagal Menambah Satuan', 'error');
+            return redirect('admin/unit');
+        }
     }
 
     /**
@@ -64,19 +77,27 @@ class UnitController extends Controller
      */
     public function update(Request $request, Unit $unit)
     {
-        $rules = [
-            'name' => 'required|string',
-            'acronym' => 'required|string|unique:units,acronym,' . $unit->id,
-        ];
+        try {
+            $rules = [
+                'name' => 'required|string',
+                'acronym' => 'required|string|unique:units,acronym,' . $unit->id,
+            ];
 
-        $validatedData = $request->validate($rules);
-        $validatedData['name'] = Str::title($validatedData['name']);
-        $validatedData['acronym'] = Str::lower($validatedData['acronym']);
-        $validatedData['status'] = $request->status == true ? 0 : 1;
+            $validatedData = $request->validate($rules);
+            $validatedData['name'] = Str::title($validatedData['name']);
+            $validatedData['acronym'] = Str::lower($validatedData['acronym']);
+            $validatedData['status'] = $request->status == true ? 0 : 1;
 
-        Unit::findOrFail($unit->id)->update($validatedData);
-
-        return redirect('/admin/unit')->with('success', 'Satuan Berhasil Diupdate');
+            Unit::findOrFail($unit->id)->update($validatedData);
+            toast('Berhasil Mengedit Satuan', 'success');
+            return redirect('/admin/unit');
+        } catch (Exception $e) {
+            toast('Gagal Menambah Satuan', 'error');
+            return redirect('admin/unit');
+        } catch (QueryException $qe) {
+            toast('Gagal Menambah Satuan', 'error');
+            return redirect('admin/unit');
+        }
     }
 
     /**
@@ -84,7 +105,16 @@ class UnitController extends Controller
      */
     public function destroy(Unit $unit)
     {
-        Unit::destroy($unit->id);
-        return redirect('/admin/unit')->with('success', 'Satuan Berhasil Dihapus');
+        try {
+            Unit::destroy($unit->id);
+            toast('Berhasil Menghapus Satuan', 'success');
+            return redirect('/admin/unit');
+        } catch (Exception $e) {
+            toast('Gagal Menambah Satuan', 'error');
+            return redirect('admin/unit');
+        } catch (QueryException $qe) {
+            toast('Gagal Menambah Satuan', 'error');
+            return redirect('admin/unit');
+        }
     }
 }

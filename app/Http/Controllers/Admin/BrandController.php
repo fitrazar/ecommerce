@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Exception;
+use Illuminate\Database\QueryException;
 use Yajra\DataTables\Facades\DataTables;
 
 class BrandController extends Controller
@@ -20,6 +22,10 @@ class BrandController extends Controller
             return DataTables::of($brands)
                 ->make();
         }
+        $title = 'Hapus Data!';
+        $text = "Apakah anda yakin untuk menghapus data ini?";
+        confirmDelete($title, $text);
+
         return view('admin.brand.index');
     }
 
@@ -36,16 +42,26 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'slug' => 'required|string|unique:brands,slug',
-        ]);
+        try {
 
-        $validatedData['status'] = $request->status == true ? 0 : 1;
+            $validatedData = $request->validate([
+                'name' => 'required|string',
+                'slug' => 'required|string|unique:brands,slug',
+            ]);
 
-        Brand::create($validatedData);
+            $validatedData['status'] = $request->status == true ? 0 : 1;
 
-        return redirect('/admin/brand')->with('success', 'Brand Berhasil Ditambahkan!');
+            Brand::create($validatedData);
+
+            toast('Berhasil Menambah Brand!', 'success');
+            return redirect('/admin/brand');
+        } catch (Exception $e) {
+            toast('Gagal Menambah Brand!', 'error');
+            return redirect('admin/brand');
+        } catch (QueryException $qe) {
+            toast('Gagal Menambah Brand!', 'error');
+            return redirect('admin/brand');
+        }
     }
 
     /**
@@ -61,17 +77,27 @@ class BrandController extends Controller
      */
     public function update(Request $request, Brand $brand)
     {
-        $rules = [
-            'name' => 'required|string',
-            'slug' => 'required|string|unique:brands,slug,' . $brand->id,
-        ];
+        try {
 
-        $validatedData = $request->validate($rules);
-        $validatedData['status'] = $request->status == true ? 0 : 1;
+            $rules = [
+                'name' => 'required|string',
+                'slug' => 'required|string|unique:brands,slug,' . $brand->id,
+            ];
 
-        Brand::findOrFail($brand->id)->update($validatedData);
+            $validatedData = $request->validate($rules);
+            $validatedData['status'] = $request->status == true ? 0 : 1;
 
-        return redirect('/admin/brand')->with('success', 'Brand Berhasil Diupdate');
+            Brand::findOrFail($brand->id)->update($validatedData);
+
+            toast('Berhasil Mengedit Brand!', 'success');
+            return redirect('/admin/brand');
+        } catch (Exception $e) {
+            toast('Gagal Mengedit Brand!', 'error');
+            return redirect('admin/brand');
+        } catch (QueryException $qe) {
+            toast('Gagal Mengedit Brand!', 'error');
+            return redirect('admin/brand');
+        }
     }
 
     /**
@@ -79,7 +105,16 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand)
     {
-        Brand::destroy($brand->id);
-        return redirect('/admin/brand')->with('success', 'Brand Berhasil Dihapus');
+        try {
+            Brand::destroy($brand->id);
+            toast('Berhasil Hapus Brand!', 'success');
+            return redirect('/admin/brand');
+        } catch (Exception $e) {
+            toast('Gagal Menghapus Brand!', 'error');
+            return redirect('admin/brand');
+        } catch (QueryException $qe) {
+            toast('Gagal Menghapus Brand!', 'error');
+            return redirect('admin/brand');
+        }
     }
 }

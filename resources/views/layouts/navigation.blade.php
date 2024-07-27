@@ -10,11 +10,13 @@
                 <li>
                     <details>
                         <summary>Data Master</summary>
-                        <ul class="p-2 z-10">
-                            <li><a href="{{ route('brand.index') }}">Data Brand</a></li>
+                        <ul class="p-2 z-10 w-[10rem]">
+                            <li><a href="{{ route('product.index') }}">Data Product</a></li>
                             <li><a href="{{ route('category.index') }}">Data Kategori</a></li>
+                            <li><a href="{{ route('brand.index') }}">Data Brand</a></li>
                             <li><a href="{{ route('material.index') }}">Data Bahan</a></li>
                             <li><a href="{{ route('unit.index') }}">Data Satuan</a></li>
+                            <li><a href="{{ route('color.index') }}">Data Warna</a></li>
                         </ul>
                     </details>
                 </li>

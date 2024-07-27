@@ -51,6 +51,8 @@
 <body class="font-poppins antialiased">
     <div class="min-h-screen bg-base-100">
         @include('layouts.navigation')
+        @include('sweetalert::alert')
+
 
         <!-- Page Heading -->
         {{-- @isset($header)
@@ -76,7 +78,6 @@
     <script src="{{ asset('assets/js/dataTableTailwind.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
     <script>
         new DataTable('#myTable');

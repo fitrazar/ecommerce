@@ -1,36 +1,29 @@
-@section('title', 'Data Satuan')
+@section('title', 'Data Product')
 
 <x-app-layout>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <x-card.card-default class="static">
-
-                <a href="{{ route('unit.create') }}">
+                <a href="{{ route('product.create') }}">
                     <x-button.primary-button>
                         <i class="fa-solid fa-plus"></i>
                         Tambah Data
                     </x-button.primary-button>
                 </a>
+               
                 <div class="relative overflow-x-auto mt-5">
-                    <table id="units" class="table">
+                    <table id="products" class="table">
                         <thead>
                             <tr>
-                                <th scope="col" class="px-6 py-3">
-                                    No
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Nama Satuan
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Singkatan
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Status
-                                </th>
-                                <th scope="col" class="px-6 py-3">
-                                    Action
-                                </th>
+                                <th scope="col" class="px-6 py-3">No</th>
+                                <th scope="col" class="px-6 py-3">Nama Product</th>
+                                <th scope="col" class="px-6 py-3">Brand Product</th>
+                                <th scope="col" class="px-6 py-3">Kategori Product</th>
+                                <th scope="col" class="px-6 py-3">Stock Product</th>
+                                <th scope="col" class="px-6 py-3">Tanggal Dibuat</th>
+                                <th scope="col" class="px-6 py-3">Tanggal Diedit</th>
+                                <th scope="col" class="px-6 py-3">Action</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -43,16 +36,9 @@
     <x-slot name="script">
         <script>
             $(document).ready(function() {
-
-                $('#units').DataTable({
-                    buttons: [
-                        // 'copy', 'excel', 'csv', 'pdf', 'print',
-                        'colvis'
-                    ],
+                $('#products').DataTable({
+                    buttons: ['colvis'],
                     processing: true,
-                    search: {
-                        return: true
-                    },
                     serverSide: true,
                     ajax: '{{ url()->current() }}',
                     columns: [{
@@ -66,18 +52,27 @@
                         },
                         {
                             data: 'name',
-                            name: 'name'
+                            name: 'name',
                         },
                         {
-                            data: 'acronym',
-                            name: 'acronym'
+                            data: 'brand.name',
+                            name: 'brand'
                         },
                         {
-                            data: 'status',
-                            name: 'status',
-                            render: function(data, type, full, meta) {
-                                return data == 1 ? 'Aktif' : 'Tidak Aktif';
-                            }
+                            data: 'category.name',
+                            name: 'category'
+                        },
+                        {
+                            data: 'stock',
+                            name: 'stock'
+                        },
+                        {
+                            data: 'created_at',
+                            name: 'created_at'
+                        },
+                        {
+                            data: 'updated_at',
+                            name: 'updated_at'
                         },
                         {
                             data: 'action',
@@ -86,15 +81,20 @@
                             searchable: false,
                             render: function(data, type, full, meta) {
                                 return `
-                                <a href="{{ url('/admin/unit/${full.id}/edit') }}">
-                                    <x-button.info-button type="button" class="btn-sm text-white"><i class="fa-regular fa-pen-to-square"></i>Edit</x-button.info-button>
-                                </a>
-                                <x-form action="{{ url('/admin/unit/${full.id}') }}" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <x-button.danger-button type="submit" class="btn-sm text-white delete-button" data-confirm-delete="true"><i class="fa-regular fa-trash-can"></i>Hapus</x-button.danger-button>
-                                </x-form>
-                            `;
+                                 <div class="flex"> 
+                                    <a href="{{ url('/admin/product/${full.slug}') }}">
+                                        <x-button.warning-button type="button" class="btn-sm text-white mr-1"><i class="fa-regular fa-eye"></i></x-button.info-button>
+                                    </a>
+                                    <a href="{{ url('/admin/product/${full.slug}/edit') }}">
+                                        <x-button.info-button type="button" class="btn-sm text-white"><i class="fa-regular fa-pen-to-square"></i></x-button.info-button>
+                                    </a>
+                                   <x-form action="{{ url('/admin/product/${full.slug}') }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <x-button.danger-button type="submit" class="btn-sm text-white delete-button" data-confirm-delete="true"><i class="fa-regular fa-trash-can"></i></x-button.danger-button>
+                                    </x-form>
+                                </div>
+                                `;
                             }
                         },
                     ]

@@ -5,10 +5,6 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <x-card.card-default class="static">
-                @if (session()->has('success'))
-                    <x-alert.success :message="session('success')" />
-                @endif
-
                 <a href="{{ route('brand.create') }}">
                     <x-button.primary-button>
                         <i class="fa-solid fa-plus"></i>
@@ -88,12 +84,31 @@
                                 <x-form action="{{ url('/admin/brand/${full.slug}') }}" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <x-button.danger-button type="submit" class="btn-sm text-white" onclick="return confirm('Are you sure?')"><i class="fa-regular fa-trash-can"></i>Hapus</x-button.danger-button>
+                                    <x-button.danger-button type="submit" class="btn-sm text-white delete-button" ><i class="fa-regular fa-trash-can"></i>Hapus</x-button.danger-button>
                                 </x-form>
                             `;
                             }
                         },
                     ]
+                });
+
+                $(document).on('click', '.delete-button', function(e) {
+                    e.preventDefault();
+                    const form = $(this).closest('form');
+                    Swal.fire({
+                        title: 'Hapus Data!',
+                        text: "Apakah anda yakin untuk menghapus data ini?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
                 });
 
             });

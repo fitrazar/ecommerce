@@ -19,13 +19,13 @@
                     <div class="mt-4">
                         <x-input.input-label for="name" :value="__('Nama Bahan')" />
                         <x-input.text-input id="name" class="mt-1 w-full" type="text" name="name"
-                            :value="old('name', $material->name)" required autofocus autocomplete="name" />
+                            :value="old('name', $material->name)" autofocus autocomplete="name" />
                         <x-input.input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
 
                     {{-- Hidden Input --}}
                     <x-input.text-input id="slug" class="mt-1 w-full" type="hidden" name="slug"
-                        :value="old('slug', $material->slug)" required autofocus autocomplete="slug" />
+                        :value="old('slug', $material->slug)" autofocus autocomplete="slug" />
 
                     <div class="mt-4 col-span-2">
                         <x-input.input-label for="status" class="label cursor-pointer mr-6">
