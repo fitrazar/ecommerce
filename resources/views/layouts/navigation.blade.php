@@ -10,13 +10,29 @@
                 <li>
                     <details>
                         <summary>Data Master</summary>
-                        <ul class="p-2 z-10 w-[10rem]">
-                            <li><a href="{{ route('product.index') }}">Data Product</a></li>
-                            <li><a href="{{ route('category.index') }}">Data Kategori</a></li>
-                            <li><a href="{{ route('brand.index') }}">Data Brand</a></li>
-                            <li><a href="{{ route('material.index') }}">Data Bahan</a></li>
-                            <li><a href="{{ route('unit.index') }}">Data Satuan</a></li>
-                            <li><a href="{{ route('color.index') }}">Data Warna</a></li>
+                        <ul class="p-2 z-10 w-[13rem]">
+                            <li>
+                                <details>
+                                    <summary>Data Product</summary>
+                                    <ul class="pl-4">
+                                        <li><a href="{{ route('product.index') }}">Product</a></li>
+                                        <li><a href="{{ route('category.index') }}">Kategori</a></li>
+                                        <li><a href="{{ route('brand.index') }}">Brand</a></li>
+                                    </ul>
+                                </details>
+                            </li>
+                            <li>
+                                <details>
+                                    <summary>Data Detail Product</summary>
+                                    <ul class="pl-4">
+                                        <li><a href="{{ route('product_image.index') }}">Gambar Product</a></li>
+                                        <li><a href="{{ route('material.index') }}">Bahan</a></li>
+                                        <li><a href="{{ route('unit.index') }}">Satuan</a></li>
+                                        <li><a href="{{ route('color.index') }}">Warna</a></li>
+                                        <li><a href="{{ route('size.index') }}">Ukuran</a></li>
+                                    </ul>
+                                </details>
+                            </li>
                         </ul>
                     </details>
                 </li>

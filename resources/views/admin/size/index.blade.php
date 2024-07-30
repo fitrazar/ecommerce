@@ -1,4 +1,4 @@
-@section('title', 'Data Warna')
+@section('title', 'Data Ukuran')
 
 <x-app-layout>
 
@@ -6,24 +6,24 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <x-card.card-default class="static">
 
-                <a href="{{ route('color.create') }}">
+                <a href="{{ route('size.create') }}">
                     <x-button.primary-button>
                         <i class="fa-solid fa-plus"></i>
                         Tambah Data
                     </x-button.primary-button>
                 </a>
                 <div class="relative overflow-x-auto mt-5">
-                    <table id="colors" class="table">
+                    <table id="sizes" class="table">
                         <thead>
                             <tr>
                                 <th scope="col" class="px-6 py-3">
                                     No
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Nama Warna
+                                    Nomor Ukuran
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Gambar
+                                    Size Chart
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Action
@@ -40,7 +40,7 @@
     <x-slot name="script">
         <script>
             $(document).ready(function() {
-                $('#colors').DataTable({
+                $('#sizes').DataTable({
                     buttons: [
                         'colvis'
                     ],
@@ -58,15 +58,12 @@
                             }
                         },
                         {
-                            data: 'name',
-                            name: 'name'
+                            data: 'size_number',
+                            name: 'size_number'
                         },
                         {
-                            data: 'image',
-                            name: 'image',
-                            render: function(data, type, row, meta) {
-                                return `<img src="{{ asset('storage/color') }}/${data}" class="h-[100px] w-[100px] object-cover border-2 border-gray-800" />`;
-                            }
+                            data: 'size_chart',
+                            name: 'size_chart'
                         },
                         {
                             data: 'action',
@@ -75,10 +72,10 @@
                             searchable: false,
                             render: function(data, type, full, meta) {
                                 return `
-                                <a href="{{ url('/admin/color/${full.id}/edit') }}">
+                                <a href="{{ url('/admin/size/${full.id}/edit') }}">
                                     <x-button.info-button type="button" class="btn-sm text-white"><i class="fa-regular fa-pen-to-square"></i>Edit</x-button.info-button>
                                 </a>
-                                <x-form action="{{ url('/admin/color/${full.id}') }}" style="display: inline;">
+                                <x-form action="{{ url('/admin/size/${full.id}') }}" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
                                     <x-button.danger-button type="submit" class="btn-sm text-white delete-button" data-confirm-delete="true"><i class="fa-regular fa-trash-can"></i>Hapus</x-button.danger-button>

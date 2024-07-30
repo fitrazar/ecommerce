@@ -36,7 +36,7 @@
                                 </div>
                             </div>
                         @endif
-                        <img class="imgPreview h-auto max-w-lg mx-auto hidden" alt="image">
+                        <img class="imgPreview h-auto max-w-lg mx-auto hidden border-2 border-gray-800" alt="image">
                         <x-input.input-label for="image" :value="__('Gambar')" />
                         <x-input.input-file id="image" class="mt-1 w-full" type="file" name="image"
                             :value="old('image')" autofocus autocomplete="image" onchange="previewImage()" />

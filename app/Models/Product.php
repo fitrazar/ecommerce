@@ -40,6 +40,11 @@ class Product extends Model
         return $this->belongsToMany(Color::class, 'product_colors');
     }
 
+    public function productSizes()
+    {
+        return $this->belongsToMany(Size::class, 'product_sizes');
+    }
+
     public function getRouteKeyName()
     {
         return 'slug';

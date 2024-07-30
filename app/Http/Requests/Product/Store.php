@@ -22,6 +22,7 @@ class Store extends FormRequest
     public function rules(): array
     {
         return [
+            'slug' => 'required|string|unique:products,slug',
             'brand_id' => 'required|exists:brands,id',
             'category_id' => 'required|exists:categories,id',
             'material_id' => 'required|exists:materials,id',
@@ -29,10 +30,12 @@ class Store extends FormRequest
             'model_number' => 'nullable|string',
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'cover' => 'nullable|file|mimes:jpg,png|max:2048',
+            'cover' => 'nullable',
             'stock' => 'required|integer',
-            'colors' => 'required|array|min:1',
-            'colors.*' => 'required|exists:colors,id',
+            'colors' => 'nullable|array|min:1',
+            'sizes' => 'nullable|array|min:1',
+            'colors.*' => 'nullable|exists:colors,id',
+            'sizes.*' => 'nullable|exists:sizes,id',
             'type' => 'required|string',
             'size' => 'nullable|string',
             'meta_title' => 'nullable|string',
@@ -40,5 +43,6 @@ class Store extends FormRequest
             'meta_keyword' => 'nullable|string',
         ];
     }
+
 
 }

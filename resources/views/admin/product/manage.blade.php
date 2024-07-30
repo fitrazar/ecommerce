@@ -110,18 +110,15 @@
 
                     {{-- Cover --}}
                     <div class="mt-4">
-                        <input type="hidden" name="oldCover" value="{{ $product->cover ?? '' }}">
-                        @if ($product->cover ?? '')
+                        @if (isset($product) && $product->cover)
                             <div class="avatar">
                                 <div class="w-[200px] rounded-xl">
-                                    <img src="{{ asset('storage/product/' . $product->cover ?? '') }}" />
+                                    <img src="{{ asset('storage/' . $product->cover) }}" />
                                 </div>
                             </div>
                         @endif
-                        <img class="coverPreview h-auto max-w-lg mx-auto hidden" alt="cover">
                         <x-input.input-label for="cover" :value="__('Cover')" />
-                        <x-input.input-file id="cover" class="mt-1 w-full" type="file" name="cover"
-                            :value="old('cover')" autofocus autocomplete="cover" onchange="previewCover()" />
+                        <input type="file" id="cover" name="cover" />
                         <x-input.input-error :messages="$errors->get('cover')" class="mt-2" />
                     </div>
 
@@ -135,7 +132,7 @@
 
                     {{-- Color --}}
                     <div class="mt-4">
-                        <x-input.input-label for="colors" :value="__('Warna')" style="width: 100%" />
+                        <x-input.input-label for="colors" :value="__('Warna')" class="w-full" />
                         <div id="color-checkboxes">
                             @foreach ($colors as $color)
                                 <div class="color-checkbox flex items-center mb-2 gap-2">
@@ -143,7 +140,7 @@
                                         id="color-{{ $color->id }}" value="{{ $color->id }}"
                                         {{ in_array($color->id, old('colors', $selectedColorIds ?? [])) ? 'checked' : '' }} />
                                     <img src="{{ asset('storage/color/' . $color->image) }}"
-                                        class="color-preview ml-2 w-[40px] h-[40px] rounded-full"
+                                        class="color-preview ml-2 w-[40px] h-[40px] rounded-full border-2 border-gray-800"
                                         alt="{{ $color->name }}" />
                                     <span>{{ $color->name }}</span>
                                 </div>
@@ -162,25 +159,19 @@
 
                     {{-- Size --}}
                     <div class="mt-4">
-                        <x-input.input-label for="size" :value="__('Size')" />
-                        <select name="size" id="size" class="mt-1 w-full form-select">
-                            <option value="">{{ __('Pilih Ukuran') }}</option>
-                            <option value="XS" {{ old('size', $product->size ?? '') == 'XS' ? 'selected' : '' }}>
-                                {{ __('XS') }}</option>
-                            <option value="S" {{ old('size', $product->size ?? '') == 'S' ? 'selected' : '' }}>
-                                {{ __('S') }}</option>
-                            <option value="M" {{ old('size', $product->size ?? '') == 'M' ? 'selected' : '' }}>
-                                {{ __('M') }}</option>
-                            <option value="L" {{ old('size', $product->size ?? '') == 'L' ? 'selected' : '' }}>
-                                {{ __('L') }}</option>
-                            <option value="XL" {{ old('size', $product->size ?? '') == 'XL' ? 'selected' : '' }}>
-                                {{ __('XL') }}</option>
-                            <option value="XXL" {{ old('size', $product->size ?? '') == 'XXL' ? 'selected' : '' }}>
-                                {{ __('XXL') }}</option>
-                        </select>
-                        <x-input.input-error :messages="$errors->get('size')" class="mt-2" />
+                        <x-input.input-label for="sizes" :value="__('Size')" />
+                        <div id="size-checkboxes" class="flex flex-wrap gap-2">
+                            @foreach ($sizes as $size)
+                                <div class="size-checkbox mb-2">
+                                    <input type="checkbox" class="checkbox" name="sizes[]"
+                                        id="size-{{ $size->id }}" value="{{ $size->id }}"
+                                        {{ in_array($size->id, old('sizes', $selectedSizeIds ?? [])) ? 'checked' : '' }} />
+                                    <span>{{ $size->size_number }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                        <x-input.input-error :messages="$errors->get('sizes')" class="mt-2" />
                     </div>
-
 
                     {{-- Meta Title --}}
                     <div class="mt-4">
@@ -208,9 +199,11 @@
                         <x-input.input-error :messages="$errors->get('meta_keyword')" class="mt-2" />
                     </div>
 
+                    {{-- Status --}}
                     <div class="mt-4 col-span-2">
                         <x-input.input-label for="status" class="label cursor-pointer mr-6">
-                            <x-input.checkbox name="status" id="status" :title="__('Sembunyikan?')" />
+                            <x-input.checkbox name="status" id="status" :title="__('Sembunyikan?')"
+                                {{ old('status', $product->status ?? false) ? 'checked' : '' }} />
                         </x-input.input-label>
                         <x-input.input-error :messages="$errors->get('status')" class="mt-2" />
                     </div>
@@ -221,38 +214,57 @@
                             {{ __('Simpan') }}
                         </x-button.primary-button>
                     </div>
-
                 </x-form>
             </x-card.card-default>
         </div>
     </div>
 
     <x-slot name="script">
+        <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+        <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+        <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
         <script>
-            const name = document.querySelector("#name");
-            const slug = document.querySelector("#slug");
+            document.addEventListener("DOMContentLoaded", function() {
+                const name = document.querySelector("#name");
+                const slug = document.querySelector("#slug");
 
-            name.addEventListener("keyup", function() {
-                let preslug = name.value;
-                preslug = preslug.replace(/[^a-zA-Z0-9\s]/g, "");
-                preslug = preslug.replace(/ /g, "-");
-                slug.value = preslug.toLowerCase();
+                name.addEventListener("keyup", function() {
+                    let preslug = name.value;
+                    preslug = preslug.replace(/[^a-zA-Z0-9\s]/g, "");
+                    preslug = preslug.replace(/ /g, "-");
+                    slug.value = preslug.toLowerCase();
+                });
+
+                FilePond.registerPlugin(FilePondPluginImagePreview);
+                FilePond.registerPlugin(FilePondPluginFileValidateType);
+
+                const inputElement = document.querySelector('#cover');
+                const pond = FilePond.create(inputElement, {
+                    acceptedFileTypes: ['image/*'],
+                    server: {
+                        process: '{{ route('upload_cover') }}',
+                        revert: '{{ route('revert_cover') }}',
+                        load: (source, load, error, progress, abort, headers) => {
+                            const myRequest = new Request(source);
+                            fetch(myRequest).then((res) => res.blob()).then(load);
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    },
+                    @if (isset($product) && $product->cover)
+                        files: [{
+                            source: '{{ asset('storage/product/' . $product->cover) }}',
+                            options: { type: 'local' }
+                        }]
+                    @endif
+                });
             });
-
-            function previewCover() {
-                const cover = document.querySelector('#cover')
-                const coverPreview = document.querySelector('.coverPreview')
-
-                coverPreview.style.display = 'block';
-                coverPreview.style.width = '200px';
-
-                const oFReader = new FileReader()
-                oFReader.readAsDataURL(cover.files[0])
-                oFReader.onload = function(oFREvent) {
-                    coverPreview.src = oFREvent.target.result
-                }
-            }
         </script>
     </x-slot>
 
+    @push('styles')
+        <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+        <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+    @endpush
 </x-app-layout>
