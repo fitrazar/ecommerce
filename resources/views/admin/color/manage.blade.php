@@ -28,20 +28,18 @@
 
                     {{-- Image --}}
                     <div class="mt-4">
-                        <input type="hidden" name="oldImage" value="{{ $color->image ?? '' }}">
-                        @if ($color->image ?? '')
-                            <div class="avatar">
-                                <div class="w-[200px] rounded-xl">
-                                    <img src="{{ asset('storage/color/' . $color->image ?? '') }}" />
-                                </div>
+                        <x-input.input-label for="image" :value="__('Gambar')" />
+                        @if ($color->image)
+                            <span class="text-xs text-gray-400">{{ __('Gambar Sebelumnya') }}</span>
+                            <div
+                                class="preview w-full rounded-xl border overflow-hidden flex items-center justify-center mt-1 p-2 box-border">
+                                <img src="{{ asset('storage/color/' . $color->image) }}" />
                             </div>
                         @endif
-                        <img class="imgPreview h-auto max-w-lg mx-auto hidden border-2 border-gray-800" alt="image">
-                        <x-input.input-label for="image" :value="__('Gambar')" />
-                        <x-input.input-file id="image" class="mt-1 w-full" type="file" name="image"
-                            :value="old('image')" autofocus autocomplete="image" onchange="previewImage()" />
+                        <input type="file" id="image" name="image" />
                         <x-input.input-error :messages="$errors->get('image')" class="mt-2" />
                     </div>
+
 
                     {{-- Submit Button --}}
                     <div class="col-span-2">
@@ -56,21 +54,48 @@
     </div>
 
     <x-slot name="script">
+        <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+        <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+        <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+        <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
         <script>
-            const name = document.querySelector("#name");
-            function previewImage() {
-                const image = document.querySelector('#image')
-                const imgPreview = document.querySelector('.imgPreview')
+            FilePond.registerPlugin(FilePondPluginImagePreview);
+            FilePond.registerPlugin(FilePondPluginFileValidateType);
+            FilePond.registerPlugin(FilePondPluginFileValidateSize);
 
-                imgPreview.style.display = 'block';
-                imgPreview.style.width = '200px';
 
-                const oFReader = new FileReader()
-                oFReader.readAsDataURL(image.files[0])
-                oFReader.onload = function(oFREvent) {
-                    imgPreview.src = oFREvent.target.result
-                }
-            }
+            const inputElement = document.querySelector('#image');
+            const pond = FilePond.create(inputElement, {
+                maxFileSize: '2MB',
+                credits: false,
+                acceptedFileTypes: ['image/*'],
+                server: {
+                    process: '{{ route('upload_color') }}',
+                    revert: '{{ route('revert_color') }}',
+                    @if ($color->image)
+                        load: (source, load, error, progress, abort, headers) => {
+                            const myRequest = new Request(source);
+                            fetch(myRequest).then((res) => res.blob()).then(load);
+                        },
+                    @endif
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                },
+                @if ($color->image)
+                    files: [{
+                        source: '{{ $color->image }}',
+                        options: {
+                            type: 'local'
+                        }
+                    }],
+                @endif
+            });
         </script>
     </x-slot>
+    @push('styles')
+        <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+        <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
+            rel="stylesheet" />
+    @endpush
 </x-app-layout>

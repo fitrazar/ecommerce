@@ -10,4 +10,9 @@ class Banner extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function setting()
+    {
+        return $this->belongsTo(Setting::class);
+    }
 }
