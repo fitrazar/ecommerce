@@ -1,7 +1,9 @@
 @section('title', 'Home')
 
 <x-guest-layout>
-  @foreach ($data as $item)
-    <x-card.card-container :title="$item['title']" :card="$item['card']" :linkButton="$item['linkButton']" />
-  @endforeach
+  <div class="flex justify-center flex-col items-center">
+    @foreach ($data as $item)
+      <x-card.card-container :title="$item['title']" :card="$item['card']" :linkButton="$item['linkButton']" />
+    @endforeach
+  </div>
 </x-guest-layout>

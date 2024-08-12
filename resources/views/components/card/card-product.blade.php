@@ -1,8 +1,8 @@
 @props(['image' => '', 'desc' => ''])
 
-<div class="py-12 ">
-  <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-    <div class="card bg-base-100 w-96 shadow-xl">
+<div class="py-12">
+  <div class="max-w-xl sm:px-1 lg:px-1">
+    <div class="card bg-base-100 max-w-[250px] shadow-xl border border-gray-400">
       <figure>
         <img src="{{ asset($image) }}" alt="Shoes" width="200" />
       </figure>

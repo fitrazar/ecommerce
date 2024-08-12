@@ -27,7 +27,77 @@ class HomeController extends Controller
                         [
                             'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
                             'image' => 'assets/images/product_1.jpg'
-                        ]
+                        ],
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                    ],
+                    'linkButton' => '/'
+                ],
+                [
+                    'title' => 'Womens High Heel Sandals',
+                    'card' => [
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                    ],
+                    'linkButton' => '/'
+                ],
+                [
+                    'title' => 'Womens High Heel Sandals',
+                    'card' => [
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                    ],
+                    'linkButton' => '/'
+                ],
+                [
+                    'title' => 'Womens High Heel Sandals',
+                    'card' => [
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
+                        [
+                            'desc' => 'Black Low Heel Shoes Suede Womens Footwears For Office Daily And Workplace Wear',
+                            'image' => 'assets/images/product_1.jpg'
+                        ],
                     ],
                     'linkButton' => '/'
                 ],
