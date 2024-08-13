@@ -10,4 +10,9 @@ class Setting extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function banner()
+    {
+        return $this->hasMany(Banner::class);
+    }
 }

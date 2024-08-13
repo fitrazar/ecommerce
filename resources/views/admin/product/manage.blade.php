@@ -110,15 +110,15 @@
 
                     {{-- Cover --}}
                     <div class="mt-4">
+                        <x-input.input-label for="cover" :value="__('Cover')" />
                         @if (isset($product) && $product->cover)
-                            <div class="avatar">
-                                <div class="w-[200px] rounded-xl">
-                                    <img src="{{ asset('storage/' . $product->cover) }}" />
-                                </div>
+                            <span class="text-xs text-gray-400">{{ __('Cover Sebelumnya') }}</span>
+                            <div
+                                class="preview w-full rounded-xl border overflow-hidden flex items-center justify-center mt-1 p-2 box-border">
+                                <img src="{{ asset('storage/product/' . $product->cover) }}" />
                             </div>
                         @endif
-                        <x-input.input-label for="cover" :value="__('Cover')" />
-                        <input type="file" id="cover" name="cover" />
+                        <input type="file" id="cover" name="cover" class="mt-1" />
                         <x-input.input-error :messages="$errors->get('cover')" class="mt-2" />
                     </div>
 
@@ -173,6 +173,32 @@
                         <x-input.input-error :messages="$errors->get('sizes')" class="mt-2" />
                     </div>
 
+                    {{-- Gambar Product  --}}
+                    <div class="mt-4">
+                        <x-input.input-label for="product_images" :value="__('Gambar Product')" />
+                        @if (isset($product) && $product->productImages->count())
+                            <span class="text-xs text-gray-400">{{ __('Gambar Product Sebelumnya') }}</span>
+                            <div class="carousel w-full relative mt-2 border rounded-xl">
+                                @foreach ($product->productImages as $index => $productImage)
+                                    <div class="carousel-item w-full flex justify-center h-[200px] {{ $index === 0 ? 'block' : 'hidden' }}"
+                                        data-slide="{{ $index }}">
+                                        <img src="{{ asset('storage/product_images/' . $productImage->image) }}"
+                                            class="max-w-full max-h-full m-2 object-cover border rounded-xl"
+                                            alt="Product Image" />
+                                    </div>
+                                @endforeach
+                                <div
+                                    class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                                    <button type="button" class="btn btn-circle carousel-prev">❮</button>
+                                    <button type="button" class="btn btn-circle carousel-next">❯</button>
+                                </div>
+                            </div>
+                        @endif
+                        <span class="text-xs text-gray-400">{{ __('*Bisa lebih dari satu') }}</span>
+                        <input type="file" id="product_images" name="product_images[]" class="mt-1" />
+                        <x-input.input-error :messages="$errors->get('product_images')" class="mt-2" />
+                    </div>
+
                     {{-- Meta Title --}}
                     <div class="mt-4">
                         <x-input.input-label for="meta_title" :value="__('Meta Title')" />
@@ -202,10 +228,8 @@
                     {{-- Status --}}
                     <div class="mt-4 col-span-2">
                         <x-input.input-label for="status" class="label cursor-pointer mr-6">
-                            <x-input.checkbox name="status" id="status" :title="__('Sembunyikan?')"
-                                {{ old('status', $product->status ?? false) ? 'checked' : '' }} />
+                            <x-input.checkbox name="status" id="status" :value="old('status', $product->status ?? '') == true ? ' ' : ' checked'" :title="__('Sembunyikan?')" />
                         </x-input.input-label>
-                        <x-input.input-error :messages="$errors->get('status')" class="mt-2" />
                     </div>
 
                     {{-- Submit Button --}}
@@ -222,6 +246,7 @@
     <x-slot name="script">
         <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
         <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+        <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
         <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
@@ -237,34 +262,104 @@
 
                 FilePond.registerPlugin(FilePondPluginImagePreview);
                 FilePond.registerPlugin(FilePondPluginFileValidateType);
+                FilePond.registerPlugin(FilePondPluginFileValidateSize);
 
                 const inputElement = document.querySelector('#cover');
                 const pond = FilePond.create(inputElement, {
+                    maxFileSize: '2MB',
+                    credits: false,
                     acceptedFileTypes: ['image/*'],
                     server: {
                         process: '{{ route('upload_cover') }}',
                         revert: '{{ route('revert_cover') }}',
-                        load: (source, load, error, progress, abort, headers) => {
-                            const myRequest = new Request(source);
-                            fetch(myRequest).then((res) => res.blob()).then(load);
-                        },
+                        @if (isset($product) && $product->cover)
+                            load: (source, load, error, progress, abort, headers) => {
+                                const myRequest = new Request(source);
+                                fetch(myRequest).then((res) => res.blob()).then(load);
+                            },
+                        @endif
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         }
                     },
                     @if (isset($product) && $product->cover)
                         files: [{
-                            source: '{{ asset('storage/product/' . $product->cover) }}',
-                            options: { type: 'local' }
+                            source: '{{ $product->cover }}',
+                            options: {
+                                type: 'local'
+                            }
                         }]
                     @endif
                 });
+
+                const items = document.querySelectorAll('.carousel-item');
+                let currentIndex = 0;
+
+                const showSlide = (index) => {
+                    items.forEach((item, i) => {
+                        item.classList.toggle('block', i === index);
+                        item.classList.toggle('hidden', i !== index);
+                    });
+                    currentIndex = index;
+                };
+
+                document.querySelector('.carousel-prev').addEventListener('click', () => {
+                    const newIndex = (currentIndex - 1 + items.length) % items.length;
+                    showSlide(newIndex);
+                });
+
+                document.querySelector('.carousel-next').addEventListener('click', () => {
+                    const newIndex = (currentIndex + 1) % items.length;
+                    showSlide(newIndex);
+                });
             });
         </script>
+        <script>
+            FilePond.registerPlugin(FilePondPluginImagePreview);
+            FilePond.registerPlugin(FilePondPluginFileValidateType);
+            FilePond.registerPlugin(FilePondPluginFileValidateSize);
+
+            const pond = FilePond.create(document.querySelector('#product_images'), {
+                maxFileSize: '2MB',
+                credits: false,
+                acceptedFileTypes: ['image/*'],
+                allowMultiple: true,
+                server: {
+                    process: '{{ route('upload_product_images') }}',
+                    revert: '{{ route('revert_product_images') }}',
+                    @if (isset($product) && $product->productImages->count() > 0)
+                        load: (source, load, error, progress, abort, headers) => {
+                            fetch(source)
+                                .then(response => response.blob())
+                                .then(blob => load(blob))
+                                .catch(err => error(err));
+                        },
+                    @endif
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                },
+                @if (isset($product) && $product->productImages->count() > 0)
+                    files: [
+                        @foreach ($productImages as $productImage)
+                            {
+                                source: '{{ $productImage->image }}',
+                                options: {
+                                    type: 'local'
+                                }
+                            },
+                        @endforeach
+                    ]
+                @endif
+
+            });
+        </script>
+
     </x-slot>
 
     @push('styles')
         <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
-        <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet" />
+        <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
+            rel="stylesheet" />
     @endpush
 </x-app-layout>

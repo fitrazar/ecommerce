@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Color;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\UploadService;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
@@ -46,13 +47,13 @@ class ColorController extends Controller
         try {
 
             $validatedData = $request->validate([
-                'name' => 'required|string',
-                'image' => 'nullable|max:4096|mimes:png,jpg,svg',
+                'name' => 'required|string', 'image' => 'nullable',
             ]);
 
-            if ($request->hasFile('image')) {
-                $validatedData['image'] = time() . '.' . $request->file('image')->getClientOriginalExtension();
-                $request->file('image')->storeAs('color', $validatedData['image']);
+            if ($request->has('image')) {
+                $file = $request['image'];
+                $upload = UploadService::uploadImage($file, 'category');
+                $validatedData['image'] = $upload;
             }
             Color::create($validatedData);
 
@@ -83,20 +84,21 @@ class ColorController extends Controller
         try {
 
             $rules = [
-                'image' => 'nullable|max:4096|mimes:png,jpg,svg',
+                'image' => 'nullable',
                 'name' => 'required|string',
             ];
 
             $validatedData = $request->validate($rules);
-            $validatedData['image'] = $request->oldImage;
-            if ($request->file('image')) {
-                $path = 'color';
-                if ($request->oldImage) {
-                    Storage::delete($path . '/' . $request->oldImage);
-                }
-                $validatedData['image'] = time() . '.' . $request->file('image')->getClientOriginalExtension();
-                $request->file('image')->storeAs($path, $validatedData['image']);
+
+            if ($request->has('image')) {
+                $file = $request['image'];
+                $upload = UploadService::updateImage($file, $color->image, 'color');
+                $validatedData['image'] = $upload;
+            } else {
+                Storage::disk('public')->delete('color/' . $validatedData['image']);
+                $validatedData['image'] = null;
             }
+
             Color::findOrFail($color->id)->update($validatedData);
 
             toast('Berhasil Mengedit Warna', 'success');
@@ -129,5 +131,18 @@ class ColorController extends Controller
             toast('Gagal Menghapus Warna', 'error');
             return redirect('admin/color');
         }
+    }
+
+    public function uploadColor(Request $request)
+    {
+        if ($request->file('image')) {
+            $path = $request->file('image')->store('tmp', 'public');
+        }
+        return $path;
+    }
+
+    public function revertColor(Request $request)
+    {
+        Storage::disk('public')->delete($request->getContent());
     }
 }

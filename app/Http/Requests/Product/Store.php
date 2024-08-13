@@ -31,6 +31,8 @@ class Store extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'cover' => 'nullable',
+            'product_images' => 'nullable',
+            'product_images.*' => 'nullable',
             'stock' => 'required|integer',
             'colors' => 'nullable|array|min:1',
             'sizes' => 'nullable|array|min:1',

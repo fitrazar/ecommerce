@@ -28,8 +28,8 @@
 
                     <!-- Cover Produk -->
                     <x-card.card-custom title="Cover Produk">
-                        <img src="{{ asset('storage/' . $data->cover) }}" alt="{{ $data->name }}"
-                            class="w-[200px] rounded-xl border-2 border-gray-500">
+                        <img src="{{ asset('storage/product/' . $data->cover) }}" alt="{{ $data->name }}"
+                            class="w-[200px] rounded-xl border border-gray-500">
                     </x-card.card-custom>
                 </div>
 
@@ -40,7 +40,7 @@
                             @if ($data->productColors->count())
                                 @foreach ($data->productColors as $color)
                                     <div class="flex-shrink-0">
-                                        <strong>{{ $color->name }}</strong>
+                                        <span class="text-sm text-gray-800">{{ $color->name }}</strong>
                                         <img src="{{ asset('storage/color/' . $color->image) }}"
                                             alt="{{ $color->name }}"
                                             class="w-[40px] h-[40px] rounded-full border-2 border-gray-800">
@@ -57,11 +57,11 @@
                                 @foreach ($data->productSizes as $size)
                                     <div class="flex-shrink-0">
                                         <strong>{{ $size->size_number }}</strong>
-                                        <span>{{ $size->size_chart }}</strong>
+                                        <span class="text-gray-500 text-xs">{{ $size->size_chart }}</strong>
                                     </div>
                                 @endforeach
                             @else
-                                <span class="text-slate-500">{{ 'Product belum memiliki ukuran' }}</span>
+                                <span class="text-sm text-slate-500">{{ 'Product belum memiliki ukuran' }}</span>
                             @endif
                         </div>
                     </x-card.card-custom>
@@ -69,14 +69,22 @@
                     {{-- Gambar Product --}}
                     <x-card.card-custom title="Gambar Produk">
                         @if ($data->productImages->count())
-                            <div class="flex flex-wrap gap-5">
-                                @foreach ($data->productImages as $image)
-                                    <img src="{{ asset('storage/product_image/' . $image->image) }}"
-                                        class="w-[100px] h-[100px] rounded-full border border-gray-800">
+                            <div class="carousel w-full relative mt-2 border rounded-xl">
+                                @foreach ($data->productImages as $index => $productImage)
+                                    <div class="carousel-item w-full flex justify-center h-[200px] {{ $index === 0 ? 'block' : 'hidden' }}"
+                                        data-slide="{{ $index }}">
+                                        <img src="{{ asset('storage/product_images/' . $productImage->image) }}"
+                                            class="max-w-full max-h-full m-2 object-cover border rounded-xl" alt="Product Image" />
+                                    </div>
                                 @endforeach
+                                <div
+                                    class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+                                    <button type="button" class="btn btn-circle carousel-prev">❮</button>
+                                    <button type="button" class="btn btn-circle carousel-next">❯</button>
+                                </div>
                             </div>
                         @else
-                            <span class="text-slate-500">{{ 'Product belum memiliki gambar' }}</span>
+                            <span class="text-slate-500 text-sm ">{{ 'Product belum memiliki gambar' }}</span>
                         @endif
                     </x-card.card-custom>
                 </div>
@@ -84,4 +92,29 @@
             </x-card.card-default>
         </div>
     </div>
+
+    <x-slot name="script">
+        <script>
+            const items = document.querySelectorAll('.carousel-item');
+            let currentIndex = 0;
+
+            const showSlide = (index) => {
+                items.forEach((item, i) => {
+                    item.classList.toggle('block', i === index);
+                    item.classList.toggle('hidden', i !== index);
+                });
+                currentIndex = index;
+            };
+
+            document.querySelector('.carousel-prev').addEventListener('click', () => {
+                const newIndex = (currentIndex - 1 + items.length) % items.length;
+                showSlide(newIndex);
+            });
+
+            document.querySelector('.carousel-next').addEventListener('click', () => {
+                const newIndex = (currentIndex + 1) % items.length;
+                showSlide(newIndex);
+            });
+        </script>
+    </x-slot>
 </x-app-layout>
