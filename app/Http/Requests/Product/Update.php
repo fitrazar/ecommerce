@@ -30,6 +30,8 @@ class Update extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'cover' => 'nullable',
+            'product_images' => 'nullable',
+            'product_images.*' => 'nullable',
             'stock' => 'required|integer',
             'colors.*' => 'required|exists:colors,id',
             'sizes.*' => 'required|exists:sizes,id',

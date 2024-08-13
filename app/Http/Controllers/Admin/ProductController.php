@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\Store as StoreRequest;
 use App\Http\Requests\Product\Update as UpdateRequest;
+use App\Http\Requests\Setting\Update;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Color;
@@ -13,6 +14,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Size;
 use App\Models\Unit;
+use App\Services\UploadService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -68,14 +70,27 @@ class ProductController extends Controller
 
             $data['status'] = $request->has('status') ? 0 : 1;
 
-            $newFilename = Str::after($request->input('cover'), 'tmp/');
-            Storage::disk('public')->move($request->input('cover'), "product/$newFilename");
-
-            $data['cover'] = "product/$newFilename";
+            // Upload Cover
+            $this->addCover($request, $data);
 
             $product = Product::create($data);
 
+            // Upload Product Images
+            $this->addProductImages($request, $product->id);
+
             $this->attachRelatedData($product, $request);
+
+            // Upload Product Images
+            if ($request->has('product_images')) {
+                $files = $request['product_images'];
+                foreach ($files as $file) {
+                    $upload = UploadService::uploadImage($file, 'product_images');
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image' => $upload,
+                    ]);
+                }
+            }
 
             toast('Berhasil Menambah Product', 'success');
 
@@ -105,8 +120,7 @@ class ProductController extends Controller
         $selectedColorIds = $product->productColors->pluck('id')->toArray();
         $selectedSizeIds = $product->productSizes->pluck('id')->toArray();
         $sizes = Size::all();
-        $productImages = $product->productImages ?? [];
-
+        $productImages = ProductImage::where('product_id', $product->id)->get();
         return view('admin.product.manage', compact(
             'product',
             'units',
@@ -125,16 +139,24 @@ class ProductController extends Controller
     {
         $data = $request->all();
         try {
-
-            $newFilename = null;
+            
             $data['status'] = $request->has('status') ? 0 : 1;
-            if (Str::afterLast($request->input('cover'), '/') !== Str::afterLast($product->cover, '/')) {
-                Storage::disk('public')->delete($product->cover);
-                $newFilename = Str::after($request->input('cover'), 'tmp/');
-                Storage::disk('public')->move($request->input('cover'), "product/$newFilename");
+
+            // //    Update Cover
+            // $this->updateCover($request, $product);
+
+            if ($request->has('cover')) {
+                $file = $request['cover'];
+                $upload = UploadService::updateImage($file, $product->cover, 'product');
+                $data['cover'] = $upload;
+            } else {
+                Storage::disk('public')->delete('product/' . $data['cover']);
+                $data['cover'] = null;
             }
 
-            $data['cover'] = $request->has('cover') ? "product/$newFilename" : $product->cover;
+            //    Update Product Images
+            $this->updateProductImages($request, $product->id);
+
 
             $product->update($data);
 
@@ -207,4 +229,79 @@ class ProductController extends Controller
         Storage::disk('public')->delete($request->getContent());
     }
 
+
+    // Add Cover
+    private function addCover(Request $request, &$data)
+    {
+        if ($request->has('cover')) {
+            $file = $request['cover'];
+            $upload = UploadService::uploadImage($file, 'product');
+            $data['cover'] = $upload;
+        }
+    }
+
+    // Add Product Images
+    private function addProductImages(Request $request, $productId)
+    {
+        if ($request->has('product_images')) {
+            $files = $request['product_images'];
+            foreach ($files as $file) {
+                $upload = UploadService::uploadImage($file, 'product_images');
+                ProductImage::create([
+                    'product_id' => $productId,
+                    'image' => $upload,
+                ]);
+            }
+        }
+    }
+
+
+    // Update Cover
+    // private function updateCover(UpdateRequest $request, Product $product)
+    // {
+    //     $data = $request->all();
+    //     if ($request->has('cover')) {
+    //         $file = $request['cover'];
+    //         $upload = UploadService::updateImage($file, $product->cover, 'product');
+    //         $data['cover'] = $upload;
+    //     } else {
+    //         Storage::disk('public')->delete('product/' . $product->cover);
+    //         $data['cover'] = null;
+    //     }
+    // }
+
+    // Update Product Images
+    private function updateProductImages(Request $request, $productId)
+    {
+        $product = Product::findOrFail($productId);
+        if ($request->has('product_images')) {
+            $files = $request['product_images'];
+            $uploadedImages = [];
+
+            // Hapus gambar yang sudah ada
+            $existingImages = $product->productImages->pluck('image')->toArray();
+            foreach ($existingImages as $image) {
+                if (!in_array($image, $files)) {
+                    Storage::disk('public')->delete('product_images/' . $image);
+                    ProductImage::where('product_id', $productId)->where('image', $image)->delete();
+                }
+            }
+
+            // Tambah atau perbarui gambar;
+            foreach ($files as $file) {
+                $uploadImage = UploadService::updateImage($file, null, 'image');
+                ProductImage::updateOrCreate(
+                    ['product_id' => $productId, 'image' => $uploadImage],
+                    ['image' => $uploadImage]
+                );
+                $uploadedImages[] = $uploadImage;
+            }
+        } else {
+            // Hapus semua gambar jika tidak ada yang dikirimkan
+            foreach ($product->productImages as $productImages) {
+                Storage::disk('public')->delete('product_images/' . $productImages->image);
+                $productImages->delete();
+            }
+        }
+    }
 }

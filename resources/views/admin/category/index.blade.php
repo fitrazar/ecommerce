@@ -82,7 +82,7 @@
                                 <a href="{{ url('/admin/category/${full.slug}/edit') }}">
                                     <x-button.info-button type="button" class="btn-sm text-white"><i class="fa-regular fa-pen-to-square"></i>Edit</x-button.info-button>
                                 </a>
-                                <x-form action="{{ url('/admin/category/${full.id}') }}" style="display: inline;">
+                                <x-form action="{{ url('/admin/category/${full.slug}') }}" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
                                     <x-button.danger-button type="submit" class="btn-sm text-white delete-button" data-confirm-delete="true"><i class="fa-regular fa-trash-can"></i>Hapus</x-button.danger-button>

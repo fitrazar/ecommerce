@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\UploadService;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
@@ -44,25 +45,27 @@ class CategoryController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'image' => 'nullable|max:4096|mimes:png,jpg,svg',
+                'image' => 'nullable',
                 'name' => 'required|string',
                 'slug' => 'required|string|unique:categories,slug',
             ]);
 
-            if ($request->hasFile('image')) {
-                $validatedData['image'] = time() . '.' . $request->file('image')->getClientOriginalExtension();
-                $request->file('image')->storeAs('category', $validatedData['image']);
+            if ($request->has('image')) {
+                $file = $request['image'];
+                $upload = UploadService::uploadImage($file, 'category');
+                $validatedData['image'] = $upload;
             }
+
             $validatedData['status'] = $request->status == true ? 0 : 1;
 
             Category::create($validatedData);
             toast('Berhasil Tambah Kategori!', 'success');
             return redirect('/admin/category');
         } catch (Exception $e) {
-            toast('Gagal Mengedit Kategori!', 'error');
+            toast('Gagal Menambah Kategori!', 'error');
             return redirect('admin/category');
         } catch (QueryException $qe) {
-            toast('Gagal Mengedit Kategori!', 'error');
+            toast('Gagal Menambah Kategori!', 'error');
             return redirect('admin/category');
         }
     }
@@ -82,24 +85,23 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         try {
-
             $rules = [
-                'image' => 'nullable|max:4096|mimes:png,jpg,svg',
+                'image' => 'nullable',
                 'name' => 'required|string',
                 'slug' => 'required|string|unique:categories,slug,' . $category->id,
             ];
 
             $validatedData = $request->validate($rules);
 
-            $validatedData['image'] = $request->oldImage;
-            if ($request->file('image')) {
-                $path = 'category';
-                if ($request->oldImage) {
-                    Storage::delete($path . '/' . $request->oldImage);
-                }
-                $validatedData['image'] = time() . '.' . $request->file('image')->getClientOriginalExtension();
-                $request->file('image')->storeAs($path, $validatedData['image']);
+            if ($request->has('image')) {
+                $file = $request['image'];
+                $upload = UploadService::updateImage($file, $category->image, 'category');
+                $validatedData['image'] = $upload;
+            } else {
+                Storage::disk('public')->delete('category/' . $category->image);
+                $validatedData['image'] = null;
             }
+
             $validatedData['status'] = $request->status == true ? 0 : 1;
 
             Category::findOrFail($category->id)->update($validatedData);
@@ -134,5 +136,19 @@ class CategoryController extends Controller
             toast('Gagal Mengedit Kategori!', 'error');
             return redirect('admin/category');
         }
+    }
+
+
+    public function uploadCategory(Request $request)
+    {
+        if ($request->file('image')) {
+            $path = $request->file('image')->store('tmp', 'public');
+        }
+        return $path;
+    }
+
+    public function revertCategory(Request $request)
+    {
+        Storage::disk('public')->delete($request->getContent());
     }
 }

@@ -15,21 +15,18 @@
                 <x-form action="{{ route('category.update', $category->slug) }}" class="md:grid md:grid-cols-2 gap-4"
                     enctype="multipart/form-data">
                     @csrf
-                    @method('PUT')
+                    @method('PATCH')
 
-                    <input type="hidden" name="oldImage" value="{{ $category->image }}">
                     <div class="mt-4">
+                        <x-input.input-label for="image" :value="__('Gambar')" />
                         @if ($category->image)
-                            <div class="avatar">
-                                <div class="w-32 rounded-xl">
-                                    <img src="{{ asset('storage/category/' . $category->image) }}" />
-                                </div>
+                            <span class="text-xs text-gray-400">{{ __('Gambar Sebelumnya') }}</span>
+                            <div
+                                class="preview w-full rounded-xl border overflow-hidden flex items-center justify-center mt-1 p-2 box-border">
+                                <img src="{{ asset('storage/category/' . $category->image) }}" />
                             </div>
                         @endif
-                        <img class="imgPreview h-auto max-w-lg mx-auto hidden" alt="image">
-                        <x-input.input-label for="image" :value="__('Gambar')" />
-                        <x-input.input-file id="image" class="mt-1 w-full" type="file" name="image"
-                            :value="old('image', $category->image)" autofocus autocomplete="image" onchange="previewImage()" />
+                        <input type="file" id="image" name="image" class="mt-2" />
                         <x-input.input-error :messages="$errors->get('image')" class="mt-2" />
                     </div>
 
@@ -61,6 +58,10 @@
         </div>
     </div>
     <x-slot name="script">
+        <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
+        <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+        <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
+        <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
         <script>
             const name = document.querySelector("#name");
             const slug = document.querySelector("#slug");
@@ -71,20 +72,40 @@
                 preslug = preslug.replace(/ /g, "-");
                 slug.value = preslug.toLowerCase();
             });
+            FilePond.registerPlugin(FilePondPluginImagePreview);
+            FilePond.registerPlugin(FilePondPluginFileValidateType);
+            FilePond.registerPlugin(FilePondPluginFileValidateSize);
 
-            function previewImage() {
-                const image = document.querySelector('#image')
-                const imgPreview = document.querySelector('.imgPreview')
-
-                imgPreview.style.display = 'block';
-                imgPreview.style.width = '200px';
-
-                const oFReader = new FileReader()
-                oFReader.readAsDataURL(image.files[0])
-                oFReader.onload = function(oFREvent) {
-                    imgPreview.src = oFREvent.target.result
-                }
-            }
+            const inputElement = document.querySelector('#image');
+            const pond = FilePond.create(inputElement, {
+                maxFileSize: '2MB',
+                credits: false,
+                acceptedFileTypes: ['image/*'],
+                server: {
+                    process: '{{ route('upload_category') }}',
+                    revert: '{{ route('revert_category') }}',
+                    load: (source, load, error, progress, abort, headers) => {
+                        const myRequest = new Request(source);
+                        fetch(myRequest).then((res) => res.blob()).then(load);
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                },
+                @if (isset($category->image))
+                    files: [{
+                        source: '{{ $category->image }}',
+                        options: {
+                            type: 'local'
+                        }
+                    }],
+                @endif
+            });
         </script>
     </x-slot>
+    @push('styles')
+        <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+        <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
+            rel="stylesheet" />
+    @endpush
 </x-app-layout>
