@@ -4,8 +4,8 @@ on:
     branches:
       - main
 jobs:
-  FTP-Deploy-Action:
-    name: FTP-Deploy-Action
+  web-deploy:
+    name: Deploy
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2.1.0
@@ -26,13 +26,12 @@ jobs:
     - name: Migrate Database
       run: php artisan migrate --force
 
-    - name: FTP-Deploy-Action
+    - name: Sync Files
       uses: SamKirkland/FTP-Deploy-Action@4.3.3
       with:
         server: ftp.madhlandigitalcreative.my.id
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./
         server-dir: ./ecommerce/
 
     - name: Clear Cached Files
