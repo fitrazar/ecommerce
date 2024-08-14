@@ -2,7 +2,7 @@
 {{-- penambahan "old" pada value input yang diambil untuk mengedit data --}}
 @section('title', isset($product) ? 'Edit Product' : 'Tambah Product')
 
-<x-app-layout>
+<x-app-layout> 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <x-card.card-default class="static">
