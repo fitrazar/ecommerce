@@ -14,8 +14,16 @@ use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\User\ProductUserController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Route::prefix('/product')->group(function () {
+//     Route::get('/', )
+// });
+
+Route::resource('/products', ProductUserController::class);
+
 
 Route::prefix('/admin')->middleware(['auth'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -31,7 +39,7 @@ Route::prefix('/admin')->middleware(['auth'])->group(function () {
     // Setting Page
     Route::resource('/setting', SettingController::class);
 
-    
+
     // integrasi filepond
     Route::post('upload_logo', [SettingController::class, 'uploadLogo'])->name('upload_logo');
     Route::post('revert_logo', [SettingController::class, 'revertLogo'])->name('revert_logo');

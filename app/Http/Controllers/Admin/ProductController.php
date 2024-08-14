@@ -17,6 +17,7 @@ use App\Models\Unit;
 use App\Services\UploadService;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Str;
@@ -139,7 +140,7 @@ class ProductController extends Controller
     {
         $data = $request->all();
         try {
-            
+
             $data['status'] = $request->has('status') ? 0 : 1;
 
             // //    Update Cover

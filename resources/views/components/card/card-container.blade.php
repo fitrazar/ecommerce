@@ -6,7 +6,7 @@
   <div class="flex flex-wrap ">
     @foreach ($card as $item)
       {{-- @dd($item['image']) --}}
-      <x-card.card-product :desc="$item['desc']" :image="$item['image']" />
+      <x-card.card-product :desc="$item['desc']" :image="$item['image']" :detail="$linkButton" />
     @endforeach
   </div>
 
