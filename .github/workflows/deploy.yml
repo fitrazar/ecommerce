@@ -32,7 +32,8 @@ jobs:
         server: ftp.madhlandigitalcreative.my.id
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /
+        local-dir: ./
+        server-dir: ./ecommerce/
 
     - name: Clear Cached Files
       run: php artisan optimize:clear
