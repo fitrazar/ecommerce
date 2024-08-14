@@ -26,13 +26,18 @@ jobs:
     - name: Migrate Database
       run: php artisan migrate --force
 
-    - name: Sync Files
+    - name: Directory Permissions
+      run: chmod -R 775 storage
+
+    - name: FTP-Deploy-Action
       uses: SamKirkland/FTP-Deploy-Action@4.3.3
       with:
         server: ftp.madhlandigitalcreative.my.id
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
         server-dir: ./ecommerce/
+        exclude: |
+          vendor/*
 
     - name: Clear Cached Files
       run: php artisan optimize:clear
