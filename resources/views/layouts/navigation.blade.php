@@ -1,4 +1,4 @@
-<div class="navbar bg-base-100 shadow-sm z-10">
+<div class="navbar bg-base-100 shadow-sm z-10 mb-32">
 
   @php
     use App\Models\Setting;
@@ -26,7 +26,7 @@
                 <details>
                   <summary>Data Product</summary>
                   <ul class="pl-4">
-                    <li><a href="{{ route('product.index') }}">Product</a></li>
+                    <li><a href=" {{ route('product.index') }} ">Product</a></li>
                     <li><a href="{{ route('category.index') }}">Kategori</a></li>
                     <li><a href="{{ route('brand.index') }}">Brand</a></li>
                   </ul>
@@ -126,11 +126,4 @@
   </div>
 
 
-</div>
-<div class="btm-nav lg:hidden shadow-sm z-10">
-
-  <a href="#" class="{{ Request::is('siswa/report*') ? 'active' : '' }}">
-    <i class="fa-solid fa-id-card-clip" class="h-5 w-5"></i>
-    <span class="btm-nav-label text-xs">Profile</span>
-  </a>
 </div>

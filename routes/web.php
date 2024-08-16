@@ -22,7 +22,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 //     Route::get('/', )
 // });
 
-Route::resource('/products', ProductUserController::class);
+Route::resource('/products', ProductUserController::class)->except('edit');
+Route::get('/products_detail/{slug}', [ProductUserController::class, 'detail'])->name('products.detail');
 
 
 Route::prefix('/admin')->middleware(['auth'])->group(function () {

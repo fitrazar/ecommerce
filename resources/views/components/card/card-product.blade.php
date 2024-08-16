@@ -1,15 +1,15 @@
 @props(['image' => '', 'desc' => '', 'detail' => ''])
 
-<div class="py-12">
-  <div class="max-w-xl sm:px-1 lg:px-1">
-    <div class="card bg-base-100 max-w-[250px] shadow-xl border border-gray-400">
-      <figure>
-        <img src="{{ asset('storage/product/' . $image) }}" alt="Shoes" width="200" />
-      </figure>
-      <div class="card-body">
-        {{-- <h2 class="card-title">{{ $title }}</h2> --}}
-        <p><a href={{ $detail }} class="hover:underline"> {{ $desc }} </a></p>
-        {{-- <a class="btn btn-link" href={{ $detail }}>Detail</a> --}}
+<div class="py-8 cursor-pointer ">
+  <div class="flex justify-center rounded-sm border border-gray-200">
+    <div class="w-[190px] h-[190px] hover:shadow-2xl transition-all shadow-xl flex justify-center items-center">
+      <img src="{{ asset('storage/product/' . $image) }}" class="w-1/2 h-1/2" alt="Shoes" width="20px" height="20px" />
+    </div>
+  </div>
+  <div class="max-w-xl">
+    <div class=" max-w-[190px] mt-2  ">
+      <div class="ml-1">
+        <p><a href={{ url($detail) }} class="hover:underline"> {{ $desc }} </a></p>
       </div>
     </div>
   </div>
