@@ -27,6 +27,7 @@ class ProductUserController extends Controller
                         $row = [
                             'desc' => $key2->description,
                             'image' => $key2->cover,
+                            'detail' => "products_detail/$key2->slug"
                         ];
                         $list_product[] = $row;
                     }
@@ -40,7 +41,7 @@ class ProductUserController extends Controller
             $row = [
                 'title' => $key->name,
                 'card' => $list_product,
-                'linkButton' => "/products/$key->id"
+                'linkButton' => "/products/$key->slug"
             ];
 
             $data[] = $row;
@@ -70,19 +71,26 @@ class ProductUserController extends Controller
      */
     public function show(string $id)
     {
-        $products = Product::with('category')->where('category_id', $id)->get();
+        $category_id = Category::where('slug', $id)->first()->id;
+
+        $products = Product::with('category')->where('category_id', $category_id)->get();
         return view('user.product.show', ['products' => $products]);
+    }
+
+    public function detail(string $slug)
+    {
+        $products = Product::where('slug', $slug)->first();
+        $product_image = ProductImage::where('product_id', $products->id)->get();
+
+        $similar_products = Product::where('slug', '!=', $slug)->where('category_id', $products->category_id)->get();
+
+        return view('user.product.detail', ['products' => $products, 'product_image' => $product_image, 'similar_products' => $similar_products]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        $products = Product::where('id', $id)->first();
-        $product_image = ProductImage::where('product_id', $id)->get();
-        return view('user.product.detail', ['products' => $products, 'product_image' => $product_image]);
-    }
+    public function edit(string $id) {}
 
     /**
      * Update the specified resource in storage.

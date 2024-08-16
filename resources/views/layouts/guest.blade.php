@@ -52,7 +52,7 @@
 
 <body class="font-poppins antialiased">
   <div class="min-h-screen bg-base-100">
-    @include('layouts.navigation')
+    @include('layouts.guest-navigation')
 
     <main>
       {{ $slot }}
