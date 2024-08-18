@@ -50,25 +50,68 @@
 </head>
 
 <body class="font-poppins antialiased">
-    <div class="min-h-screen bg-base-100">
-        @include('layouts.navigation')
-        @include('sweetalert::alert')
+    @include('layouts.navigation')
 
+    <!-- Drawer and Sidebar -->
+    <div class="drawer lg:drawer-open">
+        <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+        <div class="drawer-content flex flex-col">
+            <!-- Hamburger Icon for Mobile View -->
+            <div class="flex-none lg:hidden ml-8">
+                <label for="my-drawer" aria-label="open sidebar" class="btn btn-square btn-ghost">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        class="inline-block h-6 w-6 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </label>
+            </div>
+            <!-- Main Content -->
+            <main class="flex-1 p-4">
+                {{ $slot }}
+            </main>
+        </div>
 
-        <!-- Page Heading -->
-        {{-- @isset($header)
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endisset --}}
-
-        <!-- Page Content -->
-        <main>
-            {{ $slot }}
-        </main>
+        <!-- Sidebar Content -->
+        <div class="drawer-side">
+            <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+            <ul class="menu bg-slate-100 text-base-content min-h-full w-[250px] p-4">
+                @auth
+                <li>
+                    <a href="{{ route('dashboard') }}">
+                        <i class="fas fa-home"></i> Beranda</a>
+                </li>
+                <li>
+                    <details>
+                        <summary> <i class="fas fa-box"></i> Data Product</summary>
+                        <ul class="pl-4">
+                            <li><a href=" {{ route('product.index') }} ">Product</a></li>
+                            <li><a href="{{ route('category.index') }}">Kategori</a></li>
+                            <li><a href="{{ route('brand.index') }}">Brand</a></li>
+                        </ul>
+                    </details>
+                </li>
+                <li>
+                    <details>
+                        <summary> <i class="fas fa-boxes"></i>Data Detail Product</summary>
+                        <ul class="pl-4">
+                            <li><a href="{{ route('material.index') }}">Bahan</a></li>
+                            <li><a href="{{ route('unit.index') }}">Satuan</a></li>
+                            <li><a href="{{ route('color.index') }}">Warna</a></li>
+                            <li><a href="{{ route('size.index') }}">Ukuran</a></li>
+                        </ul>
+                    </details>
+                </li>
+                @else
+                <li><a href="{{ route('home') }}">Home</a></li>
+                <li><a href="/products">Products</a></li>
+                @endauth
+            </ul>
+        </div>
     </div>
+
+    @include('sweetalert::alert')
+
     <script src="{{ asset('assets/js/jquery-3.6.3.min.js') }}"></script>
     <script src="{{ asset('assets/js/script.js') }}"></script>
     <script src="{{ asset('assets/vendors/fontawesome/js/all.js') }}"></script>

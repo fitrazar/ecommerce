@@ -2,7 +2,7 @@
 {{-- penambahan "old" pada value input yang diambil untuk mengedit data --}}
 @section('title', isset($product) ? 'Edit Product' : 'Tambah Product')
 
-<x-app-layout> 
+<x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <x-card.card-default class="static">
@@ -227,10 +227,18 @@
 
                     {{-- Status --}}
                     <div class="mt-4 col-span-2">
-                        <x-input.input-label for="status" class="label cursor-pointer mr-6">
-                            <x-input.checkbox name="status" id="status" :value="old('status', $product->status ?? '') == true ? ' ' : ' checked'" :title="__('Sembunyikan?')" />
-                        </x-input.input-label>
+                        @if (isset($product))
+                            <x-input.input-label for="status" class="label cursor-pointer mr-6">
+                                <x-input.checkbox name="status" id="status" :value="old('status', $product->status) == true ? ' ' : ' checked'"
+                                    :title="__('Sembunyikan?')" />
+                            </x-input.input-label>
+                        @else
+                            <x-input.input-label for="status" class="label cursor-pointer mr-6">
+                                <x-input.checkbox name="status" id="status" value=" " :title="__('Sembunyikan?')" />
+                            </x-input.input-label>
+                        @endif
                     </div>
+
 
                     {{-- Submit Button --}}
                     <div class="col-span-2">
