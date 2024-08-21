@@ -2,13 +2,13 @@
 
 
 {{-- get in touch  --}}
-<div>
+<div class="lg:mx-24">
   <div class="p-3 bg-[#3ca860] mt-4 text-white text-2xl font-bold">
     <p>Get in Touch with Us</p>
   </div>
 
-  <div class="flex w-full">
-    <div class="w-1/2 ml-3">
+  <div class="flex w-full flex-wrap lg:flex-nowrap">
+    <div class="w-full text-center lg:text-left lg:w-1/2 ml-3">
       <h2 class="mt-5 text-xl font-semibold mb-4 ">Our Company</h2>
       <ul class="flex gap-4 flex-col mb-4">
         <li>About Us</li>
@@ -25,9 +25,9 @@
       </p>
     </div>
 
-    <div class="w-1/2 ml-3">
+    <div class="w-full text-center lg:text-left mt-3 lg:w-1/3 ml-3">
       <h2 class="mt-5 text-xl font-semibold mb-4 ">Reach Us</h2>
-      <ul class="flex gap-4 mb-4">
+      <ul class="flex gap-4 mb-4  justify-center lg:justify-start">
         <li><i class="fa-solid fa-location-dot"></i></li>
         <li>{{ $setting->address }}</li>
 

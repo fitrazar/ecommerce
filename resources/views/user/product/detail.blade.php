@@ -1,10 +1,10 @@
 @section('title', 'Detail Products |' . $products->name)
-
 @php
   use App\Models\Setting;
 
   $setting = Setting::first();
 @endphp
+
 
 <x-guest-layout>
   <div class="py-12">
@@ -17,7 +17,7 @@
             @php
               $image = $products->cover;
             @endphp
-            <div class="carousel w-1/2">
+            <div class="carousel w-full lg:w-1/2">
               @foreach ($product_image as $key)
                 {{-- @dd(asset('storage/product_image/' . $key->image)) --}}
                 <div id={{ 'slide' . $loop->index }} class="carousel-item relative w-full">
@@ -31,7 +31,7 @@
                 </div>
               @endforeach
             </div>
-            <div class="card-body w-1/2">
+            <div class="card-body w-full lg:w-1/2">
               <h2 class="card-title">{{ $products->name }}</h2>
               <p>{{ $products->description }}</p>
               <table class="table-auto  ">
@@ -67,23 +67,25 @@
             class="card rounded-md flex flex-wrap p-4 lg:card-side w-full bg-base-100 shadow-xl border border-black text-2xl mt-2">
             <h3 class="font-bold pl-8 w-full border border-b-black ">Explore Similar Products</h3>
 
-            @foreach ($similar_products as $item)
-              <div
-                class="w-[200px] p-4 shadow-xl border border-gray-200 mt-4 transition-all hover:shadow-2xl cursor-pointer">
-                <div class="w-[190px] h-[190px]   flex justify-center items-center">
-                  <img src="{{ asset('storage/product/' . $item['cover']) }}" class="w-1/2 h-1/2" alt="Shoes"
-                    width="20px" height="20px" />
+            <div class="flex flex-wrap justify-center">
+              @foreach ($similar_products as $item)
+                <div
+                  class="w-[200px] p-4 shadow-xl border border-gray-200 mt-4 transition-all hover:shadow-2xl cursor-pointer">
+                  <div class="w-[190px] h-[190px]   flex justify-center items-center">
+                    <img src="{{ asset('storage/product/' . $item['cover']) }}" class="w-1/2 h-1/2" alt="Shoes"
+                      width="20px" height="20px" />
+                  </div>
+                  <p class="hover:underline text-sm"><a
+                      href={{ url('products_detail/' . $item['slug']) }}>{{ $item['name'] }} </a>
+                  </p>
+                  <div class="px-2 py-1 rounded-md bg-[#01A884] text-white hover:opacity-85 mt-4">
+                    <a href={{ 'https://wa.me/' . $setting->phone }}
+                      class="block text-white text-sm bg-[#01A884] rounded md:bg-transparent md:text-white md:p-0  cursor-pointer ">
+                      <i class="fa-brands fa-whatsapp text-2xl"></i> Chat Online Now</a>
+                  </div>
                 </div>
-                <p class="hover:underline text-sm"><a
-                    href={{ url('products_detail/' . $item['slug']) }}>{{ $item['name'] }} </a>
-                </p>
-                <div class="px-2 py-1 rounded-md bg-[#01A884] text-white hover:opacity-85 mt-4">
-                  <a href={{ 'https://wa.me/' . $setting->phone }}
-                    class="block text-white text-sm bg-[#01A884] rounded md:bg-transparent md:text-white md:p-0  cursor-pointer ">
-                    <i class="fa-brands fa-whatsapp text-2xl"></i> Chat Online Now</a>
-                </div>
-              </div>
-            @endforeach
+              @endforeach
+            </div>
 
 
           </div>
@@ -116,8 +118,6 @@
             </div>
           </div>
         </div>
-
-        <x-guest-footer :$setting />
 
       </x-card.card-default>
     </div>
