@@ -3,7 +3,7 @@
   use App\Models\Product;
 
   $categories = Category::all();
-  $products = Product::all();
+  $products = Product::where('status', 1)->get();
   $product_sidebar = [];
 
   foreach ($categories as $key) {

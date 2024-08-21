@@ -14,7 +14,7 @@ class HomeController extends Controller
 
 
         $categories = Category::all();
-        $products_2 = Product::all();
+        $products_2 = Product::where('status', 1)->get();
 
         $data = [];
         foreach ($categories as $key) {

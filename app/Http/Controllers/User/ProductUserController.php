@@ -4,9 +4,10 @@ namespace App\Http\Controllers\User;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\ProductImage;
+use Yajra\DataTables\Facades\DataTables;
 
 class ProductUserController extends Controller
 {
@@ -16,7 +17,7 @@ class ProductUserController extends Controller
     public function index()
     {
         $categories = Category::all();
-        $products = Product::all();
+        $products = Product::where('status', 1)->get();
 
         $data = [];
         foreach ($categories as $key) {
@@ -69,12 +70,26 @@ class ProductUserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, Request $request)
     {
-        $category_id = Category::where('slug', $id)->first()->id;
 
-        $products = Product::with('category')->where('category_id', $category_id)->get();
-        return view('user.product.show', ['products' => $products]);
+        $category = Category::where('slug', $id)->first();
+        $category_id = $category->id;
+
+        $products = Product::where('category_id', $category_id)->where('status', 1)->filter();
+        if ($request->search) {
+            $search_field = $request->search;
+            $products->where('name', 'like', '%' . $search_field . '%');
+        } else {
+            $search_field = '';
+        }
+
+        return view('user.product.show', [
+            'category_name' => $category->name,
+            'products' => $products->simplePaginate(2)->withQueryString(),
+            'products_count' => $products->count(),
+            'search_field' => $search_field
+        ]);
     }
 
     public function detail(string $slug)

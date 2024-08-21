@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="light">
+@php
+  use App\Models\Setting;
+
+  $setting = Setting::first();
+@endphp
 
 <head>
   <meta charset="utf-8">
@@ -56,6 +61,15 @@
 
     <main>
       {{ $slot }}
+
+      <x-card.card-default class="static">
+
+        @if (!Route::is('login'))
+          <x-guest-footer :$setting />
+        @endif
+
+
+      </x-card.card-default>
     </main>
   </div>
   <script src="{{ asset('assets/js/jquery-3.6.3.min.js') }}"></script>
