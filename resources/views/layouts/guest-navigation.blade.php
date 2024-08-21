@@ -41,7 +41,8 @@
         class="block text-white bg-[#01A884]  rounded md:bg-transparent md:text-white md:p-0  cursor-pointer ">Chat
         Online Now</a>
     </div>
-
+    
+    {{--
     <a href="{{ Setting::count() ? route('setting.edit', Setting::first()->id ?? '') : route('setting.create') }}"
       class="mr-5">
       <div class="tooltip tooltip-bottom hidden lg:block" data-tip="Setting">
@@ -95,7 +96,7 @@
           </li>
         </ul>
       @endauth
-    </div>
+    </div> --}}
 
     {{-- <div class="tooltip tooltip-bottom" data-tip="Toggle Theme">
         <label class="swap swap-rotate ml-5">

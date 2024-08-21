@@ -1,7 +1,7 @@
 @section('title', 'Home')
 <x-guest-layout>
-  <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-    <x-card.card-default class="static rounded-sm mt-8">
+  <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-8">
+    <x-card.card-default class="static rounded-none mt-8">
 
       <x-card.card-slider :$slider_data />
 
@@ -12,12 +12,10 @@
 
         <div class="flex justify-center flex-wrap mt-7">
           <div class="w-full lg:w-1/3 flex justify-center">
-            <img src="storage/product/1hBfewFGSejWiUXrkZanCUFKFe1pAps0xETvlica.jpg" alt="sss" class="w-72">
+            <img src="{{ asset('storage/product/' . $slider_data[0]['cover']) }}" alt="sss" class="w-72">
           </div>
           <div class="w-full lg:w-2/3 text-left">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem voluptatibus doloribus, ipsa eius
-              earum iure fugiat id. Ut sapiente consectetur voluptatem iure. Maxime, ex atque magni facere doloribus
-              dicta?</p>
+            <p>{{ $setting->description }}</p>
           </div>
         </div>
       </div>
