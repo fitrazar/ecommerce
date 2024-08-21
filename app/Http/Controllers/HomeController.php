@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -10,6 +11,7 @@ class HomeController extends Controller
 {
     public function index()
     {
+        $setting = Setting::first();
         $products = Product::where('status', 1)->get();
 
 
@@ -50,6 +52,6 @@ class HomeController extends Controller
         }
 
 
-        return view('home', ['slider_data' => $products, 'data' => $data]);
+        return view('home', ['slider_data' => $products, 'data' => $data, 'setting' => $setting]);
     }
 }
