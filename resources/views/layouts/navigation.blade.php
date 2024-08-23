@@ -7,14 +7,17 @@
     @endphp
 
     <div class="navbar-start ml-10">
-        @if (isset($setting) && isset($setting->logo))
-            <img src="{{ asset('storage/setting/' . $setting->logo ?? '') }}"
-                class="w-16 h-16 fill-current text-gray-500 md:flex hidden" />
+        @if ((isset($setting) && isset($setting->logo)) || isset($setting->name))
+            <div class="flex justify-around items-center gap-3">
+                <img src="{{ asset('storage/setting/' . $setting->logo ?? '') }}"
+                    class="w-16 h-16 fill-current text-gray-500 md:flex hidden" />
+                <span class="self-center text-2xl font-semibold whitespace-nowrap ">{{ $setting->name }}</span>
+            </div>
         @else
             <x-application-logo class="w-16 h-16 fill-current text-gray-500 md:flex hidden" />
         @endif
     </div>
-    <div class="navbar-center hidden lg:flex">
+    {{-- <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
             @auth
                 <li><a href="{{ route('dashboard') }}">Beranda</a></li>
@@ -26,7 +29,7 @@
                                 <details>
                                     <summary>Data Product</summary>
                                     <ul class="pl-4">
-                                        <li><a href="{{ route('product.index') }}">Product</a></li>
+                                        <li><a href=" {{ route('product.index') }} ">Product</a></li>
                                         <li><a href="{{ route('category.index') }}">Kategori</a></li>
                                         <li><a href="{{ route('brand.index') }}">Brand</a></li>
                                     </ul>
@@ -47,9 +50,11 @@
                     </details>
                 </li>
             @else
+                <li><a href="{{ route('home') }}">Home</a></li>
+                <li><a href="/products">Products</a></li>
             @endauth
         </ul>
-    </div>
+    </div> --}}
     <div class="navbar-end mr-10">
         <a href="{{ Setting::count() ? route('setting.edit', Setting::first()->id ?? '') : route('setting.create') }}"
             class="mr-5">
@@ -59,7 +64,7 @@
         </a>
         <div class="dropdown dropdown-end">
             @auth
-                <div class="tooltip tooltip-bottom" data-tip="{{Auth::user()->name}}">
+                <div class="tooltip tooltip-bottom" data-tip="{{ Auth::user()->name }}">
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                         @php
                             $words = explode(' ', Auth::user()->name);
@@ -124,11 +129,4 @@
     </div>
 
 
-</div>
-<div class="btm-nav lg:hidden shadow-sm z-10">
-
-    <a href="#" class="{{ Request::is('siswa/report*') ? 'active' : '' }}">
-        <i class="fa-solid fa-id-card-clip" class="h-5 w-5"></i>
-        <span class="btm-nav-label text-xs">Profile</span>
-    </a>
 </div>
