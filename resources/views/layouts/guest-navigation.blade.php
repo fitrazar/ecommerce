@@ -2,6 +2,9 @@
 
   @php
     use App\Models\Setting;
+    use Illuminate\Support\Facades\App;
+
+    $language = App::getLocale();
 
     $setting = Setting::first();
   @endphp
@@ -30,18 +33,32 @@
 
     <div class="px-2 py-1 rounded-md text-black hover:opacity-85">
       <a href={{ route('home') }}
-        class="block {{ Route::is('home') ? 'text-[#44ac66] ' : 'text-black' }} hover:text-[#44ac66] rounded md:bg-transparent md:p-0  cursor-pointer ">Home</a>
+        class="block {{ Route::is('home') ? 'text-[#44ac66] ' : 'text-black' }} hover:text-[#44ac66] rounded md:bg-transparent md:p-0  cursor-pointer "><span>{{ __('Home') }}
+        </span>
+      </a>
     </div>
     <div class="px-2 py-1 rounded-md text-black hover:opacity-85">
       <a href={{ route('products.index') }}
-        class="block {{ Route::is('products.*') ? 'text-[#44ac66]' : 'text-black' }}  hover:text-[#44ac66] rounded md:bg-transparent md:p-0  cursor-pointer ">Products</a>
+        class="block {{ Route::is('products.*') ? 'text-[#44ac66]' : 'text-black' }}  hover:text-[#44ac66] rounded md:bg-transparent md:p-0  cursor-pointer ">{{ __('Products') }}</a>
     </div>
-    <div class="mr-4 px-2 py-1 hidden md:block rounded-md bg-[#01A884] text-white hover:opacity-85">
+    <div class=" px-2 py-1 hidden md:block rounded-md bg-[#01A884] text-white hover:opacity-85">
       <a href="#"
-        class="block text-white bg-[#01A884]  rounded md:bg-transparent md:text-white md:p-0  cursor-pointer ">Chat
-        Online Now</a>
+        class="block text-white bg-[#01A884]  rounded md:bg-transparent md:text-white md:p-0  cursor-pointer ">{{ __('Chat Online Now') }}</a>
     </div>
-    
+    <div></div>
+    <div class="mr-4 px-2 py-1 rounded-md  text-black hover:opacity-85">
+      <a class="{{ $language == 'en' ? 'bg-[#01A884]' : 'bg-gray-400' }}  text-white rounded-md mr-2 p-2"
+        href="{{ LaravelLocalization::getLocalizedURL('en') }}">
+        EN
+      </a>
+      <a class="{{ $language == 'id' ? 'bg-[#01A884]' : 'bg-gray-400' }}  text-white rounded-md mr-2 p-2"
+        href="{{ LaravelLocalization::getLocalizedURL('id') }}">
+        ID
+      </a>
+    </div>
+    {{-- <div class="mr-4 px-2 py-1 hidden md:block rounded-md bg-[#01A884] text-white hover:opacity-85">
+    </div> --}}
+
     {{--
     <a href="{{ Setting::count() ? route('setting.edit', Setting::first()->id ?? '') : route('setting.create') }}"
       class="mr-5">

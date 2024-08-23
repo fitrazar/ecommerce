@@ -67,7 +67,7 @@
 
 
 <div class="w-48 ml-24 rounded-md hidden lg:block top-52 z-50 fixed">
-  <h3 class="text-black bg-[#e3e3e3] p-2 font-semibold">Products</h3>
+  <h3 class="text-black bg-[#e3e3e3] p-2 font-semibold">{{ __('Products') }}</h3>
   @foreach ($product_sidebar as $item)
     <details>
       <summary>{{ $item['category'] }}</summary>

@@ -65,12 +65,12 @@
           </div>
           <div
             class="card rounded-md flex flex-wrap p-4 lg:card-side w-full bg-base-100 shadow-xl border border-black text-2xl mt-2">
-            <h3 class="font-bold pl-8 w-full border border-b-black ">Explore Similar Products</h3>
+            <h3 class="font-bold pl-8 w-full border border-b-black ">{{ __('Explore Similar Products') }}</h3>
 
             <div class="flex flex-wrap justify-center">
               @foreach ($similar_products as $item)
                 <div
-                  class="w-[200px] p-4 shadow-xl border border-gray-200 mt-4 transition-all hover:shadow-2xl cursor-pointer">
+                  class="w-[210px] p-4 shadow-xl border border-gray-200 mt-4 transition-all hover:shadow-2xl cursor-pointer">
                   <div class="w-[190px] h-[190px]   flex justify-center items-center">
                     <img src="{{ asset('storage/product/' . $item['cover']) }}" class="w-1/2 h-1/2" alt="Shoes"
                       width="20px" height="20px" />
@@ -80,8 +80,8 @@
                   </p>
                   <div class="px-2 py-1 rounded-md bg-[#01A884] text-white hover:opacity-85 mt-4">
                     <a href={{ 'https://wa.me/' . $setting->phone }}
-                      class="block text-white text-sm bg-[#01A884] rounded md:bg-transparent md:text-white md:p-0  cursor-pointer ">
-                      <i class="fa-brands fa-whatsapp text-2xl"></i> Chat Online Now</a>
+                      class="block text-white bg-[#01A884] rounded md:bg-transparent md:text-white md:p-0  cursor-pointer text-sm">
+                      <i class="fa-brands fa-whatsapp text-2xl"></i> {{ __('Chat Online Now') }}</a>
                   </div>
                 </div>
               @endforeach
@@ -91,14 +91,14 @@
           </div>
           <div
             class="card rounded-md flex flex-wrap justify-center p-4 lg:card-side w-full bg-base-100 shadow-xl border border-black text-2xl mt-2">
-            <h3 class="font-bold pl-8 w-full text-center">Products Detail</h3>
+            <h3 class="font-bold pl-8 w-full text-center">{{ __('Products Detail') }}</h3>
 
             <div class=" max-w-[90rem] ">
               <table class="table table-zebra flex overflow-hidden justify-center lg:w-[50rem]">
                 <tbody class="flex flex-col">
                   <!-- row 1 -->
                   <tr class="hover overflow-hidden">
-                    <td>Type</td>
+                    <td>{{ __('Type') }}</td>
                     <td>{{ $products->type }}</td>
                   </tr>
                   {{-- <tr class="hover">

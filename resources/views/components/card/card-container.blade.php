@@ -11,7 +11,6 @@
   </div>
   <div class="flex justify-end mr-2">
     <a href={{ $linkButton }}
-      class="  text-[#55aa60] border text-center font-bold w-60 py-2   hover:text-white hover:bg-[#018069] border-[#85c99c] bg-white rounded-sm mr-4 mb-4">View
-      More</a>
+      class="  text-[#55aa60] border text-center font-bold w-60 py-2   hover:text-white hover:bg-[#018069] border-[#85c99c] bg-white rounded-sm mr-4 mb-4">{{ __('View More') }}</a>
   </div>
 </div>
