@@ -1,29 +1,46 @@
 <?php
 
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ProductImageController;
-use App\Http\Controllers\Admin\SizeController;
-use App\Http\Controllers\BannerController;
-use App\Http\Controllers\SettingController;
 use App\Http\Controllers\User\ProductUserController;
+use App\Http\Controllers\Admin\ProductImageController;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Route::prefix('/product')->group(function () {
 //     Route::get('/', )
 // });
+Route::group(
+    [
+        'prefix' => LaravelLocalization::setLocale(),
+        'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
+    ],
+    function () {
 
-Route::resource('/products', ProductUserController::class)->except('edit');
-Route::get('/products_detail/{slug}', [ProductUserController::class, 'detail'])->name('products.detail');
+        /** ADD ALL LOCALIZED ROUTES INSIDE THIS GROUP **/
+        Route::get('/test', function () {
+            return App::getLocale();
+        });
+
+
+        Route::get('/', [HomeController::class, 'index'])->name('home');
+        Route::resource('/products', ProductUserController::class)->except('edit');
+        Route::get('/products_detail/{slug}', [ProductUserController::class, 'detail'])->name('products.detail');
+    }
+);
 
 
 Route::prefix('/admin')->middleware(['auth'])->group(function () {

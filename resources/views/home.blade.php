@@ -7,7 +7,7 @@
 
       {{-- About Us --}}
       <div class="text-center flex flex-col items-center ">
-        <h2 class=" text-2xl font-semibold mt-16 ">About Us</h2>
+        <h2 class=" text-2xl font-semibold mt-16 "> {{ __('About Us') }} </h2>
         <hr class="w-10 bg-[#3ca860] h-1 border border-[#3ca860] ">
 
         <div class="flex justify-center flex-wrap mt-7">
@@ -22,7 +22,7 @@
 
       {{-- Popular Products --}}
       <div class="text-center flex flex-col items-center  ">
-        <h2 class=" text-2xl font-semibold mt-16 ">Popular Products</h2>
+        <h2 class=" text-2xl font-semibold mt-16 ">{{ __('Popular Products') }}</h2>
         <hr class="w-10 bg-[#3ca860] h-1 border border-[#3ca860] ">
 
         <div class="flex gap-3 flex-wrap justify-center">
@@ -51,7 +51,7 @@
 
               <div>
                 <p class="text-[#56a860] text-lg font-semibold hover:underline mt-3"><a
-                    href={{ $item['linkButton'] }}>View Details</a>
+                    href={{ $item['linkButton'] }}>{{ __('View Details') }}</a>
                 </p>
               </div>
             </div>

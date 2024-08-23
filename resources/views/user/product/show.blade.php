@@ -5,7 +5,7 @@
   <div class="w-48 ml-24 rounded-md lg:block top-28 z-50 mt-5 mb-6">
     <form>
       <label class="bg-white flex">
-        <input type="text" name="search" class="" placeholder="Search" value="{{ $search_field }}" />
+        <input type="text" name="search" class="" placeholder="{{ __('Search') }}" value="{{ $search_field }}" />
 
         <button class="btn bg-[#44ac66] hover:opacity-80 hover:text-black text-white" type="submit">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-4 w-4 opacity-70">

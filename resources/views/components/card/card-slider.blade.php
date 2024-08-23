@@ -204,7 +204,7 @@
             <div class="px-2 py-1 rounded-md bg-[#01A884] text-white hover:opacity-85 w-52  justify-center mx-auto ">
               <a href={{ 'https://wa.me/' . $setting->phone }}
                 class="block text-white text-center text-sm bg-[#01A884] rounded md:bg-transparent md:text-white md:p-0  cursor-pointer ">
-                <i class="fa-brands fa-whatsapp text-2xl"></i> Chat Online Now</a>
+                <i class="fa-brands fa-whatsapp text-2xl"></i> {{ __('Chat Online Now') }}</a>
             </div>
           </div>
         </div>
