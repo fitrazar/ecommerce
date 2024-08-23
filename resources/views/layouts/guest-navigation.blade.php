@@ -1,65 +1,58 @@
 <div class="navbar bg-base-100 shadow-sm z-10">
 
-  @php
-    use App\Models\Setting;
-    use Illuminate\Support\Facades\App;
+    @php
+        use App\Models\Setting;
+        use Illuminate\Support\Facades\App;
 
-    $language = App::getLocale();
+        $language = App::getLocale();
 
-    $setting = Setting::first();
-  @endphp
+        $setting = Setting::first();
+    @endphp
 
-  <div class="navbar-start hidden lg:block  ml-10">
-    @if ((isset($setting) && isset($setting->logo)) || isset($setting->name))
-      <div class="flex justify-around items-center gap-3">
-        <img src="{{ asset('storage/setting/' . $setting->logo ?? '') }}"
-          class="w-16 h-16 fill-current text-gray-500 md:flex hidden" />
-        <span class="self-center text-2xl font-semibold whitespace-nowrap ">{{ $setting->name }}</span>
-      </div>
-    @else
-      <x-application-logo class="w-16 h-16 fill-current text-gray-500 md:flex hidden" />
-    @endif
-  </div>
-
-
-  <div class="navbar-center hidden lg:flex">
-    <ul class="menu menu-horizontal px-1">
-
-    </ul>
-  </div>
-
-
-  <div class="navbar-end  justify-center gap-8 md:justify-end mx-3 w-full md:w-1/2">
-
-    <div class="px-2 py-1 rounded-md text-black hover:opacity-85">
-      <a href={{ route('home') }}
-        class="block {{ Route::is('home') ? 'text-[#44ac66] ' : 'text-black' }} hover:text-[#44ac66] rounded md:bg-transparent md:p-0  cursor-pointer "><span>{{ __('Home') }}
-        </span>
-      </a>
+    <div class="navbar-start hidden lg:block  ml-10">
+        @if ((isset($setting) && isset($setting->logo)) || isset($setting->name))
+            <a href="{{ route('home') }}" class="flex items-center gap-3">
+                <img src="{{ asset('storage/setting/' . $setting->logo ?? '') }}"
+                    class="w-16 h-16 fill-current text-gray-500 md:flex hidden" />
+                <span class="self-center text-2xl font-semibold whitespace-nowrap ">{{ $setting->name }}
+            </a>
+            </a>
+        @else
+            <x-application-logo class="w-16 h-16 fill-current text-gray-500 md:flex hidden" />
+        @endif
     </div>
-    <div class="px-2 py-1 rounded-md text-black hover:opacity-85">
-      <a href={{ route('products.index') }}
-        class="block {{ Route::is('products.*') ? 'text-[#44ac66]' : 'text-black' }}  hover:text-[#44ac66] rounded md:bg-transparent md:p-0  cursor-pointer ">{{ __('Products') }}</a>
-    </div>
-    <div class=" px-2 py-1 hidden md:block rounded-md bg-[#01A884] text-white hover:opacity-85">
-      <a href="#"
-        class="block text-white bg-[#01A884]  rounded md:bg-transparent md:text-white md:p-0  cursor-pointer ">{{ __('Chat Online Now') }}</a>
-    </div>
-    <div></div>
-    <div class="mr-4 px-2 py-1 rounded-md  text-black hover:opacity-85">
-      <a class="{{ $language == 'en' ? 'bg-[#01A884]' : 'bg-gray-400' }}  text-white rounded-md mr-2 p-2"
-        href="{{ LaravelLocalization::getLocalizedURL('en') }}">
-        EN
-      </a>
-      <a class="{{ $language == 'id' ? 'bg-[#01A884]' : 'bg-gray-400' }}  text-white rounded-md mr-2 p-2"
-        href="{{ LaravelLocalization::getLocalizedURL('id') }}">
-        ID
-      </a>
-    </div>
-    {{-- <div class="mr-4 px-2 py-1 hidden md:block rounded-md bg-[#01A884] text-white hover:opacity-85">
+
+    <div class="navbar-end  justify-center gap-8 md:justify-end mx-3 w-full md:w-1/2">
+
+        <div class="px-2 py-1 rounded-md text-black hover:opacity-85">
+            <a href={{ route('home') }}
+                class="block {{ Route::is('home') ? 'text-[#44ac66] ' : 'text-black' }} hover:text-[#44ac66] rounded md:bg-transparent md:p-0  cursor-pointer "><span>{{ __('Home') }}
+                </span>
+            </a>
+        </div>
+        <div class="px-2 py-1 rounded-md text-black hover:opacity-85">
+            <a href={{ route('products.index') }}
+                class="block {{ Route::is('products.*') ? 'text-[#44ac66]' : 'text-black' }}  hover:text-[#44ac66] rounded md:bg-transparent md:p-0  cursor-pointer ">{{ __('Products') }}</a>
+        </div>
+        <div class=" px-2 py-1 hidden md:block rounded-md bg-[#01A884] text-white hover:opacity-85">
+            <a href="#"
+                class="block text-white bg-[#01A884]  rounded md:bg-transparent md:text-white md:p-0  cursor-pointer ">{{ __('Chat Online Now') }}</a>
+        </div>
+        <div></div>
+        <div class="mr-4 px-2 py-1 rounded-md  text-black hover:opacity-85">
+            <a class="{{ $language == 'en' ? 'bg-[#01A884]' : 'bg-gray-400' }}  text-white rounded-md mr-2 p-2"
+                href="{{ LaravelLocalization::getLocalizedURL('en') }}">
+                EN
+            </a>
+            <a class="{{ $language == 'id' ? 'bg-[#01A884]' : 'bg-gray-400' }}  text-white rounded-md mr-2 p-2"
+                href="{{ LaravelLocalization::getLocalizedURL('id') }}">
+                ID
+            </a>
+        </div>
+        {{-- <div class="mr-4 px-2 py-1 hidden md:block rounded-md bg-[#01A884] text-white hover:opacity-85">
     </div> --}}
 
-    {{--
+        {{--
     <a href="{{ Setting::count() ? route('setting.edit', Setting::first()->id ?? '') : route('setting.create') }}"
       class="mr-5">
       <div class="tooltip tooltip-bottom hidden lg:block" data-tip="Setting">
@@ -115,7 +108,7 @@
       @endauth
     </div> --}}
 
-    {{-- <div class="tooltip tooltip-bottom" data-tip="Toggle Theme">
+        {{-- <div class="tooltip tooltip-bottom" data-tip="Toggle Theme">
         <label class="swap swap-rotate ml-5">
           <input type="checkbox" class="theme-controller hidden" value="dark" />
           <svg class="swap-off fill-current w-10 h-10" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -130,7 +123,7 @@
       </div> --}}
 
 
-  </div>
+    </div>
 
 
 </div>
